@@ -4,6 +4,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Button;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -12,6 +15,21 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Create reference to text view
+        final TextView firstTextView = (TextView) findViewById(R.id.appTitle);
+
+        // Create reference to first button
+        Button firstButton = (Button) findViewById(R.id.firstButton);
+
+        // Make something happen when button is clicked
+        firstButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Set text of text view to anything
+                firstTextView.setText("You Clicked");
+            }
+        });
     }
 
     @Override
