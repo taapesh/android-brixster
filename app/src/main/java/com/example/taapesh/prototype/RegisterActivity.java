@@ -1,21 +1,22 @@
 package com.example.taapesh.prototype;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.app.Activity;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.Toast;
 
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends ActionBarActivity {
 
     protected EditText userFirstName;
     protected EditText userLastName;
     protected EditText userEmail;
     protected EditText userPassword;
-
     protected Button registerButton;
 
     @Override
@@ -31,8 +32,32 @@ public class RegisterActivity extends Activity {
 
         registerButton = (Button) findViewById(R.id.registerButton);
 
-    }
+        // Create listener for register button
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // toast
+                Toast.makeText(RegisterActivity.this, "Register pressed", Toast.LENGTH_SHORT).show();
 
+                // Get user information and convert to String
+                String firstName = userFirstName.getText().toString().trim();
+                String lastName = userLastName.getText().toString().trim();
+                String email = userEmail.getText().toString().trim();
+                String password = userPassword.getText().toString().trim();
+
+                // Check if email is already in use or if
+                // password does not meet requirements and if so, display error message
+
+                // Store user in AWS DynamoDB
+                // If successful, show success message and take user to Homepage
+
+                // Temporary: just go to homepage
+                Intent goToHomepage = new Intent(RegisterActivity.this, HomepageActivity.class);
+                startActivity(goToHomepage);
+            }
+        });
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

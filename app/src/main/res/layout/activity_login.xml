@@ -14,7 +14,8 @@
         android:checked="false"
         android:layout_below="@+id/loginPassword"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="15dp"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -28,7 +29,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="35dp"/>
+        android:layout_marginTop="5dp"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -41,7 +42,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/loginEmail"
-        android:layout_alignEnd="@+id/loginEmail" />
+        android:layout_alignEnd="@+id/loginEmail"
+        android:layout_marginTop="5dp"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -53,6 +55,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/loginPassword"
         android:layout_alignEnd="@+id/loginPassword"
-        android:background="#6CAA28"
-        android:textColor="#ffffffff" />
+        android:background="@color/main_green"
+        android:textColor="#ffffffff"
+        android:layout_marginTop="15dp"
+        android:clickable="true"/>
 </RelativeLayout>
