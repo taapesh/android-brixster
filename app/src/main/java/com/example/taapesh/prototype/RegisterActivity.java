@@ -4,38 +4,40 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
+import android.app.Activity;
+import android.widget.EditText;
 import android.widget.Button;
 
 
-public class MainActivity extends ActionBarActivity {
+public class RegisterActivity extends Activity {
+
+    protected EditText userFirstName;
+    protected EditText userLastName;
+    protected EditText userEmail;
+    protected EditText userPassword;
+
+    protected Button registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
 
-        // Create reference to text view
-        final TextView firstTextView = (TextView) findViewById(R.id.appTitle);
+        // Initialize user registration fields
+        userFirstName = (EditText) findViewById(R.id.registerFirstName);
+        userLastName = (EditText) findViewById(R.id.registerLastName);
+        userEmail = (EditText) findViewById(R.id.registerEmail);
+        userPassword = (EditText) findViewById(R.id.registerPassword);
 
-        // Create reference to first button
-        Button firstButton = (Button) findViewById(R.id.firstButton);
+        registerButton = (Button) findViewById(R.id.registerButton);
 
-        // Make something happen when button is clicked
-        firstButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Set text of text view to anything
-                firstTextView.setText("You Clicked");
-            }
-        });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_register, menu);
         return true;
     }
 
