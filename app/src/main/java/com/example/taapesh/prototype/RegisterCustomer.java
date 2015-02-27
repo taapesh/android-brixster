@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
-public class RegisterActivity extends ActionBarActivity {
+public class RegisterCustomer extends ActionBarActivity {
 
     protected EditText userFirstName;
     protected EditText userLastName;
@@ -37,7 +37,7 @@ public class RegisterActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 // toast
-                Toast.makeText(RegisterActivity.this, "Register pressed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterCustomer.this, "Register pressed", Toast.LENGTH_SHORT).show();
 
                 // Get user information and convert to String
                 String firstName = userFirstName.getText().toString().trim();
@@ -52,7 +52,7 @@ public class RegisterActivity extends ActionBarActivity {
                 // If successful, show success message and take user to Homepage
 
                 // Temporary: just go to homepage
-                Intent goToHomepage = new Intent(RegisterActivity.this, HomepageActivity.class);
+                Intent goToHomepage = new Intent(RegisterCustomer.this, HomepageCustomer.class);
                 startActivity(goToHomepage);
             }
         });

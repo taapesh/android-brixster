@@ -6,4 +6,13 @@
     <string name="title_activity_register">Register</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_start">Welcome</string>
+    <string name="business_login"><u><b>Business Login</b></u></string>
+    <string name="employee_login"><u><b>Employee Login</b></u></string>
+    <string name="title_activity_business_login">Business Login</string>
+    <string name="title_activity_employee_login">Employee Login</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_enter_store_password">EnterStorePassword</string>
+    <string name="title_activity_employee_homepage">EmployeeHomepage</string>
+    <string name="title_activity_business_homepage">BusinessHomepage</string>
 </resources>

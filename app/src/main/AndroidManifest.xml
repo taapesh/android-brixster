@@ -11,33 +11,47 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme" >
         <activity
-            android:name=".HomepageActivity"
+            android:name=".HomepageCustomer"
             android:label="@string/app_name" >
         </activity>
-
         <activity
-            android:name=".RegisterActivity"
+            android:name=".RegisterCustomer"
             android:label="@string/title_activity_register" >
         </activity>
-
         <activity
-            android:name=".LoginActivity"
+            android:name=".LoginCustomer"
             android:label="@string/title_activity_login" >
         </activity>
-
         <activity
             android:name=".StartActivity"
             android:label="@string/title_activity_start" >
-
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".BusinessLogin"
+            android:label="@string/title_activity_business_login" >
+        </activity>
+        <activity
+            android:name=".EmployeeLogin"
+            android:label="@string/title_activity_employee_login" >
+        </activity>
+        <activity
+            android:name=".EnterStorePassword"
+            android:label="@string/title_activity_enter_store_password" >
+        </activity>
+        <activity
+            android:name=".EmployeeHomepage"
+            android:label="@string/title_activity_employee_homepage" >
+        </activity>
+        <activity
+            android:name=".BusinessHomepage"
+            android:label="@string/title_activity_business_homepage" >
         </activity>
     </application>
 

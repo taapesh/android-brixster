@@ -9,36 +9,21 @@ import android.view.View;
 import android.widget.Button;
 
 
-public class StartActivity extends ActionBarActivity {
+public class EnterStorePassword extends ActionBarActivity {
 
-    protected Button goToLoginButton;
-    protected Button goToRegistrationButton;
+    protected Button employeeLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_enter_store_password);
 
-        goToLoginButton = (Button) findViewById(R.id.goToLoginButton);
-        goToRegistrationButton = (Button) findViewById(R.id.goToRegistrationButton);
-
-        // Create login button listener
-        goToLoginButton.setOnClickListener(new View.OnClickListener() {
+        employeeLoginButton = (Button) findViewById(R.id.employeeLoginButton);
+        employeeLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Go to login page
-                Intent goToLogin = new Intent(StartActivity.this, LoginCustomer.class);
-                startActivity(goToLogin);
-            }
-        });
-
-        // Create register button listener
-        goToRegistrationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Go to registration page
-                Intent goToRegistration = new Intent(StartActivity.this, RegisterCustomer.class);
-                startActivity(goToRegistration);
+                Intent goToEmployeeHomepage = new Intent(EnterStorePassword.this, EmployeeHomepage.class);
+                startActivity(goToEmployeeHomepage);
             }
         });
     }
@@ -47,7 +32,7 @@ public class StartActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_start, menu);
+        getMenuInflater().inflate(R.menu.menu_enter_store_password, menu);
         return true;
     }
 

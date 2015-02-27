@@ -9,31 +9,40 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginCustomer extends ActionBarActivity {
 
     protected EditText userEmail;
     protected EditText userPassword;
     protected CheckBox rememberMe;
     protected Button loginButton;
 
+    protected TextView businessLoginText;
+    protected TextView employeeLoginText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Get user login fields
         userEmail = (EditText) findViewById(R.id.loginEmail);
         userPassword = (EditText) findViewById(R.id.loginPassword);
         rememberMe = (CheckBox) findViewById(R.id.rememberMeCheckBox);
         loginButton = (Button) findViewById(R.id.loginButton);
+
+        // Get business and employee login links
+        businessLoginText = (TextView) findViewById(R.id.businessLogin);
+        employeeLoginText = (TextView) findViewById(R.id.employeeLogin);
 
         // Create listener for login button
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // toast
-                Toast.makeText(LoginActivity.this, "Login pressed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginCustomer.this, "Login pressed", Toast.LENGTH_SHORT).show();
 
                 // Get user's credentials and convert to String
                 String email = userEmail.getText().toString().trim();
@@ -43,8 +52,25 @@ public class LoginActivity extends ActionBarActivity {
                 // If info is incorrect, show error
 
                 // Temporary: just go to homepage
-                Intent goToHomepage = new Intent(LoginActivity.this, HomepageActivity.class);
+                Intent goToHomepage = new Intent(LoginCustomer.this, HomepageCustomer.class);
                 startActivity(goToHomepage);
+            }
+        });
+
+        // Create listeners for alternate login links that redirect to other activities
+        businessLoginText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToBusinessLogin = new Intent(LoginCustomer.this, BusinessLogin.class);
+                startActivity(goToBusinessLogin);
+            }
+        });
+
+        employeeLoginText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToEmployeeLogin = new Intent(LoginCustomer.this, EmployeeLogin.class);
+                startActivity(goToEmployeeLogin);
             }
         });
     }
