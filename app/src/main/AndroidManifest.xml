@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -52,6 +54,10 @@
         <activity
             android:name=".BusinessHomepage"
             android:label="@string/title_activity_business_homepage" >
+        </activity>
+        <activity
+            android:name=".ViewStorefront"
+            android:label="@string/title_activity_view_storefront" >
         </activity>
     </application>
 
