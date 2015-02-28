@@ -12,7 +12,7 @@
     <string name="title_activity_employee_login">Employee Login</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_enter_store_password">EnterStorePassword</string>
-    <string name="title_activity_employee_homepage">EmployeeHomepage</string>
-    <string name="title_activity_business_homepage">BusinessHomepage</string>
+    <string name="title_activity_enter_store_password">Enter Store Password</string>
+    <string name="title_activity_employee_homepage">Employee Homepage</string>
+    <string name="title_activity_business_homepage">Business Homepage</string>
 </resources>

@@ -7,10 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 public class EnterStorePassword extends ActionBarActivity {
 
+    protected EditText storePasswordField;
     protected Button employeeLoginButton;
 
     @Override
@@ -18,10 +20,18 @@ public class EnterStorePassword extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_store_password);
 
+        storePasswordField = (EditText) findViewById(R.id.storePasswordField);
         employeeLoginButton = (Button) findViewById(R.id.employeeLoginButton);
         employeeLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Get store password as String
+                String storePassword = storePasswordField.getText().toString().trim();
+
+                // Check store password against database record
+                //
+
+                // If password is correct, go to Employee Homepage
                 Intent goToEmployeeHomepage = new Intent(EnterStorePassword.this, EmployeeHomepage.class);
                 startActivity(goToEmployeeHomepage);
             }
