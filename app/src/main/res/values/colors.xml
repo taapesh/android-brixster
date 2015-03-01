@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#ECECEC</color>
+    <color name="background">#D8D8D8</color>
     <color name="main_green">#118504</color>
     <color name="sa_green">#14a804</color>
     <color name="accent_green">#97e08f</color>
     <color name="alt_green">#619924</color>
     <color name="dark_green">#4E7A1D</color>
+
+    <color name="view_bg">#b20e0f</color>
+    <color name="white">#ffffff</color>
+    <color name="btn_bg">#3e4a56</color>
 </resources>
