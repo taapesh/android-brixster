@@ -5,9 +5,11 @@
         parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:windowBackground">@color/background</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListViewStyle</item>
 
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/MyActionBar</item>
+
     </style>
 
     <!-- ActionBar styles -->
@@ -18,4 +20,12 @@
         <!-- Support library compatibility -->
         <item name="background">@color/main_green</item>
     </style>
+
+    <!-- List Item separator style -->
+    <style name="DropDownListViewStyle">
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:divider">@color/grey</item>
+    </style>
+
+
 </resources>

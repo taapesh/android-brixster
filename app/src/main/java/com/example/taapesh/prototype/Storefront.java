@@ -9,15 +9,17 @@ import android.app.ProgressDialog;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.Hashtable;
 import java.util.Map;
 
 /*
- * Storefront is a store's info sheet. User's can get all the
- * crucial info they need about the store and more importantly,
- * they can enter the store from here to begin shopping
+ * Storefront is where users can see all the stores nearby that match
+ * their search request. From here, they can click a button to request
+ * additional info, or they can click to enter a particular store.
  */
 public class Storefront extends ActionBarActivity {
     // Google Places object
@@ -28,6 +30,9 @@ public class Storefront extends ActionBarActivity {
 
     // Progress dialog
     ProgressDialog pDialog;
+
+    // UI Elements
+    protected Button enterStoreButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,14 @@ public class Storefront extends ActionBarActivity {
         // Initialize placeDetails map
         googlePlaces = new GooglePlaces();
         placeDetails = new Hashtable();
+
+        enterStoreButton = (Button) findViewById(R.id.enterStoreButton);
+        enterStoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Enter the store
+            }
+        });
     }
 
     /*

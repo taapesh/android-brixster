@@ -48,6 +48,9 @@ public class HomepageCustomer extends ActionBarActivity implements
     // This code is returned in Activity.onActivityResult
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
+    // String of stores to search
+    private String[] stores = {};
+
     // DetectConnection object
     private DetectConnection dc;
 
@@ -121,6 +124,7 @@ public class HomepageCustomer extends ActionBarActivity implements
                 // Intent to go to storefront
                 Intent goToStorefront = new Intent(getApplicationContext(),
                         Storefront.class);
+
                 // Pass place_id to new activity
                 goToStorefront.putExtra("placeID", placeID);
                 startActivity(goToStorefront);
@@ -158,6 +162,7 @@ public class HomepageCustomer extends ActionBarActivity implements
                         // Retrieve the autocomplete results.
                         resultList = googlePlaces.autocomplete(
                                 constraint.toString(), currentLatitude, currentLongitude);
+
                         //resultList = autocomplete(constraint.toString());
 
                         // Assign the data to the FilterResults
@@ -186,6 +191,7 @@ public class HomepageCustomer extends ActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        storeSearchField.setText("");
         mGoogleApiClient.connect();
     }
 

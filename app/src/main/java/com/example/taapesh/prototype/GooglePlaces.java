@@ -6,6 +6,7 @@ package com.example.taapesh.prototype;
  */
 import android.util.Log;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,13 @@ import org.json.JSONException;
 public class GooglePlaces {
     private static final String TAG = GooglePlaces.class.getSimpleName();
 
+    // Temporary: list of accepted places
+    private static final String[] stores = { "h-e-b", "kroger", "randalls", "supertarget",
+            "target", "trader joe's", "walmart", "walmart supercenter", "whole foods",
+            "whole foods inc", "whole foods market", "whole foods market inc"};
+
+    private static final int NUM_STORES = stores.length;
+
     // Google Places strings
     private static final String PLACES_AUTOCOMPLETE = "https://maps.googleapis.com/maps/api/place/autocomplete/json?";
     private static final String PLACES_DETAILS = "https://maps.googleapis.com/maps/api/place/details/json?";
@@ -38,6 +46,16 @@ public class GooglePlaces {
 
     public GooglePlaces() {
         placeIds = new ArrayList<>();
+
+        // Test: check if stores array is sorted
+        boolean sorted = true;
+        for(int i = 0; i < stores.length-1; i ++){
+            if (stores[i].compareTo(stores[i+1]) > 0) {
+                Log.i("SORTED", "NO, NOT SORTED!!! " + stores[i] + " " + stores[i+1]);
+                sorted = false;
+                break;
+            }
+        } if (sorted) Log.i("SORTED", "YES SORTED!!!");
     }
 
     /*
@@ -59,10 +77,11 @@ public class GooglePlaces {
             sb.append("input=" + URLEncoder.encode(input, "utf8"));
             sb.append("&types=" + "establishment");
             sb.append("&location=" + location);
-            sb.append("&radius=100");
+            sb.append("&radius=15000");
             sb.append("&key=" + PLACES_API_KEY);
 
             URL url = new URL(sb.toString());
+            Log.i("URL", url.toString());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
 
@@ -94,25 +113,51 @@ public class GooglePlaces {
 
             // Extract the Place descriptions from the results
             int lenPredArray = predsJsonArray.length();
+            Log.i("LENPREDS", "FOR " + input + ": " + Integer.toString(lenPredArray) + " results found");
 
-            // If predictions are less than 5, use that length for results array
-            // Otherwise, cap results to max length
-            int lenResults = (lenPredArray > MAX_RESULTS) ? MAX_RESULTS : lenPredArray;
-            resultList = new ArrayList<String>(lenResults);
-            placeIds = new ArrayList<String>(lenResults);
+            // Create result and placeID lists
+            resultList = new ArrayList<>();
+            placeIds = new ArrayList<>();
 
-            for (int i = 0; i < lenResults; i++) {
+            int resultsAdded = 0;
+
+            for (int i = 0; i < lenPredArray; i++) {
                 JSONObject item = predsJsonArray.getJSONObject(i);
 
-                // Get place details and fill them in
+                // Determine if store should be included in results
                 String desc = item.getString("description");
+                int idx = desc.indexOf(",");
+                String storeName = desc.substring(0, idx);
+                String storeNameLower = storeName.toLowerCase();
 
-                // Remove country, user knows which country they are in
-                desc = desc.replace(", United States", "");
+                int found = Arrays.binarySearch(stores, storeNameLower);
+                if (found >= 0) {
+                    Log.i("BINARY", "Found through binary search!");
 
-                // Add result to list and store corresponding place_id
-                resultList.add(desc);
-                placeIds.add(item.getString("place_id"));
+                    String address = desc.substring(idx+2);
+                    address = address.replace(", United States", "");
+
+                    resultList.add("   " + storeName + "\n" + "   " + address);
+                    placeIds.add(item.getString("place_id"));
+                    resultsAdded++;
+                    if (resultsAdded == MAX_RESULTS) break;
+                }
+
+                /*
+                try {
+                    Map placeDetails = getPlaceDetails(placeID);
+
+                    if (placeDetails.size() > 0) {
+                        if (placeDetails.get("types").toString().contains("grocery_or_supermarket")) {
+                            String address = placeDetails.get("address").toString();
+                            resultList.add(placeDetails.get("name") + "\n" + address);
+                            continue;
+                        }
+                    }
+                } catch (Exception e) {
+                    // Handle place details exception
+                }
+                */
             }
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);
@@ -143,7 +188,7 @@ public class GooglePlaces {
 
             // Load the results into a StringBuilder
             int read;
-            char[] buff = new char[2048];
+            char[] buff = new char[8192];
             while ((read = in.read(buff)) != -1) {
                 jsonResults.append(buff, 0, read);
             }
@@ -168,7 +213,6 @@ public class GooglePlaces {
             details.put("address", results.get("vicinity").toString());
             details.put("phone_number", results.getString("formatted_phone_number"));
             details.put("types", results.getString("types"));
-            Log.i("TYPES", details.get("types").toString());
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);
         }

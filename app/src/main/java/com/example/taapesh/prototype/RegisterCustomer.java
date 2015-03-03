@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 
 public class RegisterCustomer extends ActionBarActivity {
-
+    // UI Elements
     protected EditText userFirstName;
     protected EditText userLastName;
     protected EditText userEmail;

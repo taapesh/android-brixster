@@ -6,8 +6,7 @@
     <color name="accent_green">#97e08f</color>
     <color name="alt_green">#619924</color>
     <color name="dark_green">#4E7A1D</color>
-
-    <color name="view_bg">#b20e0f</color>
     <color name="white">#ffffff</color>
     <color name="btn_bg">#3e4a56</color>
+    <color name="grey">#D8D8D8</color>
 </resources>
