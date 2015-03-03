@@ -10,7 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 public class LoginCustomer extends ActionBarActivity {
 
@@ -41,9 +41,6 @@ public class LoginCustomer extends ActionBarActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // toast
-                Toast.makeText(LoginCustomer.this, "Login pressed", Toast.LENGTH_SHORT).show();
-
                 // Get user's credentials and convert to String
                 String email = userEmail.getText().toString().trim();
                 String password = userPassword.getText().toString().trim();
