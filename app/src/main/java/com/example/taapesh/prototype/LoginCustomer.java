@@ -54,7 +54,7 @@ public class LoginCustomer extends ActionBarActivity {
             }
         });
 
-        // Create listeners for alternate login links that redirect to other activities
+        // Alternate login for businesses
         businessLoginText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +63,7 @@ public class LoginCustomer extends ActionBarActivity {
             }
         });
 
+        // Alternate login for employees
         employeeLoginText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

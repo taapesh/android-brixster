@@ -1,19 +1,25 @@
 package com.example.taapesh.prototype;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
+/*
+ * Handles place searches
+ * and place detail requests
+ */
 import android.util.Log;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.net.URLEncoder;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+
+import java.io.InputStreamReader;
+import java.io.IOException;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-import java.io.IOException;
-import java.net.MalformedURLException;
 
 
 public class GooglePlaces {
@@ -78,6 +84,9 @@ public class GooglePlaces {
             }
         }
 
+        /*
+         * Parse results and add them to results list
+         */
         try {
             // Create a JSON object hierarchy from the results
             JSONObject jsonObj = new JSONObject(jsonResults.toString());
@@ -96,13 +105,19 @@ public class GooglePlaces {
                 JSONObject item = predsJsonArray.getJSONObject(i);
 
                 // Get place details and fill them in
-                resultList.add(item.getString("description"));
+                String desc = item.getString("description");
+
+                // Remove country, user knows which country they are in
+                desc = desc.replace(", United States", "");
+
+                // Add result to list and store corresponding place_id
+                resultList.add(desc);
                 placeIds.add(item.getString("place_id"));
             }
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);
         }
-
+        // Return results
         return resultList;
     }
 
@@ -113,20 +128,22 @@ public class GooglePlaces {
     public Map getPlaceDetails(String reference) throws Exception {
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
-        Map details = new Hashtable();
+        Map details = new HashMap();
 
         try {
+            // Build Google Places request URL
             StringBuilder sb = new StringBuilder(PLACES_DETAILS);
             sb.append("placeid=" + reference);
             sb.append("&key=" + PLACES_API_KEY);
 
+            // Open a a connection and read in json results
             URL url = new URL(sb.toString());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
 
             // Load the results into a StringBuilder
             int read;
-            char[] buff = new char[1024];
+            char[] buff = new char[2048];
             while ((read = in.read(buff)) != -1) {
                 jsonResults.append(buff, 0, read);
             }
@@ -140,18 +157,18 @@ public class GooglePlaces {
             }
         }
 
-        Log.i("JSONRESULTS", jsonResults.toString());
         // Now we have our JSON results, attempt to parse
         try {
-            JSONObject jObject = new JSONObject(jsonResults.toString());
+            // Create a JSONObject with the received response string
+            JSONObject jsonObject = new JSONObject(jsonResults.toString());
+            JSONObject results = jsonObject.getJSONObject("result");
 
             // Get specific details from Json results such as name, type, address, etc.
-            details.put("name", jObject.getString("name"));
-            //details.put("address", jObject.get("vicinity").toString());
-            //details.put("phone_number", jObject.getString("formatted_phone_number"));
-            //details.put("types", jObject.getString("types"));
-            return details;
-
+            details.put("name", results.getString("name"));
+            details.put("address", results.get("vicinity").toString());
+            details.put("phone_number", results.getString("formatted_phone_number"));
+            details.put("types", results.getString("types"));
+            Log.i("TYPES", details.get("types").toString());
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);
         }

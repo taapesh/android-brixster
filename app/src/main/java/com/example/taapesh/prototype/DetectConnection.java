@@ -19,7 +19,8 @@ public class DetectConnection {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();
 
             if (info != null) {
-                for (int i = 0; i < info.length; i++) {
+                int length = info.length;
+                for (int i = 0; i < length; i++) {
                     if (info[i].getState() == NetworkInfo.State.CONNECTED) {
                         return true;
                     }

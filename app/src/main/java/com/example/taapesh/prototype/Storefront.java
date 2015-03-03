@@ -2,48 +2,103 @@ package com.example.taapesh.prototype;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.text.Html;
-import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-
+/*
+ * Storefront is a store's info sheet. User's can get all the
+ * crucial info they need about the store and more importantly,
+ * they can enter the store from here to begin shopping
+ */
 public class Storefront extends ActionBarActivity {
-
+    // Google Places object
     private GooglePlaces googlePlaces;
+
+    // Place details HashMap returned by Google Places API request
+    Map placeDetails;
+
+    // Progress dialog
+    ProgressDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_storefront);
 
+        // Get referring intent and retrieve place_id from it
         Intent i = getIntent();
-        String reference = i.getStringExtra("reference");
+        String placeID = i.getStringExtra("placeID");
 
+        // Calling a Async Background thread
+        new LoadPlaceDetails().execute(placeID);
+
+        // Create Google Places Object
+        // Initialize placeDetails map
         googlePlaces = new GooglePlaces();
-        Map details = new Hashtable();
-        try {
-            details = googlePlaces.getPlaceDetails(reference);
-        } catch (Exception e) {
+        placeDetails = new Hashtable();
+    }
 
+    /*
+     * Asynchronously get place details
+     * Create progress dialog and dismiss it when job is done
+     */
+    class LoadPlaceDetails extends AsyncTask<String, String, String> {
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(Storefront.this);
+            pDialog.setMessage("Loading Storefront");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
         }
 
-        Toast.makeText(Storefront.this, reference, Toast.LENGTH_LONG);
-        if (details.size() > 0) {
-            Toast.makeText(Storefront.this, details.get("name").toString(), Toast.LENGTH_LONG);
+        /*
+         * Get place details asynchronously
+         */
+        protected String doInBackground(String... args) {
+            String placeID = args[0];
+
+            // Attempt to get place details
+            try {
+                placeDetails = googlePlaces.getPlaceDetails(placeID);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        /**
+         * After completing background task, dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            pDialog.dismiss();
+            showDetails();
         }
     }
 
+    /*
+     * Test: show store name after details are retrieved
+     */
+    private void showDetails() {
+        if (placeDetails.size() > 0) {
+            Toast.makeText(Storefront.this, placeDetails.get("name").toString(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(Storefront.this, "No details found", Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

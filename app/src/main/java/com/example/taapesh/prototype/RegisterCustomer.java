@@ -36,9 +36,6 @@ public class RegisterCustomer extends ActionBarActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // toast
-                Toast.makeText(RegisterCustomer.this, "Register pressed", Toast.LENGTH_SHORT).show();
-
                 // Get user information and convert to String
                 String firstName = userFirstName.getText().toString().trim();
                 String lastName = userLastName.getText().toString().trim();
@@ -56,7 +53,6 @@ public class RegisterCustomer extends ActionBarActivity {
                 startActivity(goToHomepage);
             }
         });
-
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.taapesh.prototype;
 
-/* While page is active, location info is tracked
+/*
+ * While page is active, location info is tracked
  * and updated periodically so that the Google Places
  * search will return the most accurate information.
  * Efficiently manage Google Places searches and GPS tracking to
@@ -8,12 +9,12 @@ package com.example.taapesh.prototype;
  */
 import java.util.ArrayList;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.os.Bundle;
+import android.os.AsyncTask;
 import android.view.Menu;
+import android.content.Intent;
 import android.view.MenuItem;
 
 // Imports for retrieving Google Places data
@@ -47,6 +48,7 @@ public class HomepageCustomer extends ActionBarActivity implements
     // This code is returned in Activity.onActivityResult
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
+    // DetectConnection object
     private DetectConnection dc;
 
     // Google Api Client
@@ -60,33 +62,33 @@ public class HomepageCustomer extends ActionBarActivity implements
     private static final int FAST_UPDATE_INTERVAL = 1;
 
     // Latitude and Longitude
-    private double currentLatitude = 0.0;
-    private double currentLongitude = 0.0;
+    private double currentLatitude;
+    private double currentLongitude;
 
     // Google Places
     private GooglePlaces googlePlaces;
-    private static final int MAX_RESULTS = 5;
-
-    // id of the place
-    public static String KEY_REFERENCE = "reference";
 
     // UI elements
     private AutoCompleteTextView storeSearchField;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage_customer);
 
-        dc = new DetectConnection(getApplicationContext());
+        // Initialize longitude and latitude
+        currentLatitude = 0.0;
+        currentLongitude = 0.0;
 
+        // Create connection detector and check for available connection
+        dc = new DetectConnection(getApplicationContext());
         boolean canConnect = dc.canConnectToInternet();
+
         if (!canConnect) {
             // Show alert and prompt user to enable internet connection
         }
 
-        // Create GoogleApi client
+        // Create GoogleApi client object
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -96,10 +98,10 @@ public class HomepageCustomer extends ActionBarActivity implements
         // Create the LocationRequest object
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(FAST_UPDATE_INTERVAL * 1000);   // 1 second, in milliseconds
+                .setInterval(UPDATE_INTERVAL * 1000)
+                .setFastestInterval(FAST_UPDATE_INTERVAL * 1000);
 
-        // Initialize Google Places object
+        // Create Google Places object
         googlePlaces = new GooglePlaces();
 
         // Get store search field and attach it to autocomplete
@@ -108,22 +110,27 @@ public class HomepageCustomer extends ActionBarActivity implements
 
         /*
         * ListItem click event
-        * On selecting a list item, Storefront is launched
+        * On selecting an item, Storefront activity is launched for that store
         */
         storeSearchField.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String place_id = googlePlaces.placeIds.get(position);
+                // Get corresponding place_id for selected item
+                String placeID = googlePlaces.placeIds.get(position);
 
                 // Intent to go to storefront
                 Intent goToStorefront = new Intent(getApplicationContext(),
                         Storefront.class);
-                goToStorefront.putExtra(KEY_REFERENCE, place_id);
+                // Pass place_id to new activity
+                goToStorefront.putExtra("placeID", placeID);
                 startActivity(goToStorefront);
             }
         });
     }
 
+    /*
+     * Adapter for Autocomplete TextView
+     */
     private class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
         private ArrayList<String> resultList;
 
@@ -225,6 +232,10 @@ public class HomepageCustomer extends ActionBarActivity implements
         handleNewLocation(location);
     }
 
+    /*
+     * On connected, get the latest location information
+     * Or start receiving location updates
+     */
     @Override
     public void onConnected(Bundle bundle) {
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -270,6 +281,9 @@ public class HomepageCustomer extends ActionBarActivity implements
         }
     }
 
+    /*
+     * Easy toast maker
+     */
     private void MakeToast(String message) {
         Toast.makeText(HomepageCustomer.this, message, Toast.LENGTH_SHORT).show();
     }
@@ -296,7 +310,10 @@ public class HomepageCustomer extends ActionBarActivity implements
         return true;
     }
 
-    // Update current latitude and longitude in the background
+    /*
+     * Update current latitude and longitude in the background on separate thread
+     * Not currently implemented
+     */
     class UpdateLocation extends AsyncTask<String, String, String> {
         protected String doInBackground(String... args) {
             return null;
