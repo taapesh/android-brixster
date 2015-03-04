@@ -66,16 +66,12 @@
             android:label="@string/title_activity_business_homepage" >
         </activity>
         <activity
-            android:name=".ViewStorefront"
-            android:label="@string/title_activity_view_storefront" >
-        </activity>
-        <activity
             android:name=".Storefront"
             android:label="@string/title_activity_storefront" >
         </activity>
         <activity
-            android:name=".StoreEntry"
-            android:label="@string/title_activity_store_entry" >
+            android:name=".CardLayoutActivity"
+            android:label="@string/title_activity_card_layout" >
         </activity>
     </application>
 

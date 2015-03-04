@@ -29,7 +29,7 @@ public class GooglePlaces {
     // Temporary: list of accepted places
     private static final String[] stores = { "h-e-b", "kroger", "randalls", "supertarget",
             "target", "trader joe's", "walmart", "walmart supercenter", "whole foods",
-            "whole foods inc", "whole foods market", "whole foods market inc"};
+            "whole foods inc", "whole foods market", "whole foods market inc" };
 
     private static final int NUM_STORES = stores.length;
 
@@ -41,11 +41,7 @@ public class GooglePlaces {
     private static final String types ="establishment";
     private static final int MAX_RESULTS = 5;
 
-    // Store place IDs of returned places
-    public static ArrayList<String> placeIds;
-
     public GooglePlaces() {
-        placeIds = new ArrayList<>();
 
         // Test: check if stores array is sorted
         boolean sorted = true;
@@ -59,10 +55,18 @@ public class GooglePlaces {
     }
 
     /*
+     * Use placeID to get store details and create store card
+     */
+    public ArrayList<String> createStoreCard(String placeID) {
+        ArrayList<String> resultList = null;
+
+        return resultList;
+    }
+
+    /*
      * Get Google Places autocomplete results based on user input and location
      */
-    public ArrayList<String> autocomplete(String input, double lat, double lon) {
-        placeIds.clear();
+    public ArrayList<String> getStorePredictions(String name, double lat, double lon) {
         ArrayList<String> resultList = null;
 
         HttpURLConnection conn = null;
@@ -74,7 +78,7 @@ public class GooglePlaces {
             String longitude = Double.valueOf(lon).toString();
             String location = latitude+","+longitude;
 
-            sb.append("input=" + URLEncoder.encode(input, "utf8"));
+            sb.append("input=" + URLEncoder.encode(name, "utf8"));
             sb.append("&types=" + "establishment");
             sb.append("&location=" + location);
             sb.append("&radius=15000");
@@ -113,11 +117,9 @@ public class GooglePlaces {
 
             // Extract the Place descriptions from the results
             int lenPredArray = predsJsonArray.length();
-            Log.i("LENPREDS", "FOR " + input + ": " + Integer.toString(lenPredArray) + " results found");
 
             // Create result and placeID lists
             resultList = new ArrayList<>();
-            placeIds = new ArrayList<>();
 
             int resultsAdded = 0;
 
@@ -126,6 +128,8 @@ public class GooglePlaces {
 
                 // Determine if store should be included in results
                 String desc = item.getString("description");
+                String placeID = item.getString("place_id");
+
                 int idx = desc.indexOf(",");
                 String storeName = desc.substring(0, idx);
                 String storeNameLower = storeName.toLowerCase();
@@ -133,31 +137,13 @@ public class GooglePlaces {
                 int found = Arrays.binarySearch(stores, storeNameLower);
                 if (found >= 0) {
                     Log.i("BINARY", "Found through binary search!");
+                    resultList.add(placeID);
 
-                    String address = desc.substring(idx+2);
-                    address = address.replace(", United States", "");
-
-                    resultList.add("   " + storeName + "\n" + "   " + address);
-                    placeIds.add(item.getString("place_id"));
                     resultsAdded++;
-                    if (resultsAdded == MAX_RESULTS) break;
-                }
-
-                /*
-                try {
-                    Map placeDetails = getPlaceDetails(placeID);
-
-                    if (placeDetails.size() > 0) {
-                        if (placeDetails.get("types").toString().contains("grocery_or_supermarket")) {
-                            String address = placeDetails.get("address").toString();
-                            resultList.add(placeDetails.get("name") + "\n" + address);
-                            continue;
-                        }
+                    if (resultsAdded == MAX_RESULTS) {
+                        break;
                     }
-                } catch (Exception e) {
-                    // Handle place details exception
                 }
-                */
             }
         } catch (JSONException e) {
             Log.e(TAG, "Cannot process JSON results", e);
@@ -170,7 +156,7 @@ public class GooglePlaces {
      * Get Google Place Details results based on place id
      * Return an array of place information
      */
-    public Map getPlaceDetails(String reference) throws Exception {
+    public Map getStoreDetails(String reference) throws Exception {
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
         Map details = new HashMap();

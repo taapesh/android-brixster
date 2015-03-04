@@ -7,7 +7,9 @@ package com.example.taapesh.prototype;
  * Efficiently manage Google Places searches and GPS tracking to
  * optimize API quota and battery usage.
  */
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -49,7 +51,8 @@ public class HomepageCustomer extends ActionBarActivity implements
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     // String of stores to search
-    private String[] stores = {};
+    private String[] stores =  { "H-E-B", "Kroger", "Randalls", "SuperTarget",
+            "Target", "Trader Joe's", "Walmart", "Whole Foods" };
 
     // DetectConnection object
     private DetectConnection dc;
@@ -104,12 +107,9 @@ public class HomepageCustomer extends ActionBarActivity implements
                 .setInterval(UPDATE_INTERVAL * 1000)
                 .setFastestInterval(FAST_UPDATE_INTERVAL * 1000);
 
-        // Create Google Places object
-        googlePlaces = new GooglePlaces();
-
         // Get store search field and attach it to autocomplete
         storeSearchField = (AutoCompleteTextView) findViewById(R.id.storeSearchField);
-        storeSearchField.setAdapter(new PlacesAutoCompleteAdapter(this, R.layout.list_item));
+        storeSearchField.setAdapter(new StoreSearchAdapter(this, R.layout.list_item));
 
         /*
         * ListItem click event
@@ -118,27 +118,28 @@ public class HomepageCustomer extends ActionBarActivity implements
         storeSearchField.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get corresponding place_id for selected item
-                String placeID = googlePlaces.placeIds.get(position);
-
                 // Intent to go to storefront
                 Intent goToStorefront = new Intent(getApplicationContext(),
                         Storefront.class);
 
-                // Pass place_id to new activity
-                goToStorefront.putExtra("placeID", placeID);
+                // Pass store name to new activity
+                goToStorefront.putExtra("store", (String) parent.getItemAtPosition(position));
+                goToStorefront.putExtra("latitude", currentLatitude);
+                goToStorefront.putExtra("longitude", currentLongitude);
                 startActivity(goToStorefront);
             }
         });
     }
 
     /*
-     * Adapter for Autocomplete TextView
+     * Custom adapter for store search
+     * Searches registered stores for approximate matches
      */
-    private class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
+    private class StoreSearchAdapter extends ArrayAdapter<String> implements Filterable {
         private ArrayList<String> resultList;
+        private ArrayList<String> approxResults;
 
-        public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
+        public StoreSearchAdapter(Context context, int textViewResourceId) {
             super(context, textViewResourceId);
         }
 
@@ -157,13 +158,30 @@ public class HomepageCustomer extends ActionBarActivity implements
             Filter filter = new Filter() {
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
+                    resultList = new ArrayList<>();
+                    approxResults = new ArrayList<>();
                     FilterResults filterResults = new FilterResults();
-                    if (constraint != null) {
-                        // Retrieve the autocomplete results.
-                        resultList = googlePlaces.autocomplete(
-                                constraint.toString(), currentLatitude, currentLongitude);
 
-                        //resultList = autocomplete(constraint.toString());
+                    if (constraint != null) {
+                        // Get search text as lower case String
+                        String searchText = constraint.toString().toLowerCase();
+
+                        // Determine which stores to display in the result
+                        for(String _store : stores) {
+                            // Process store String
+                            String store = _store.replace("-", "").replace("'","").toLowerCase();
+
+                            // Words that start with the search text have higher priority
+                            if (store.startsWith(searchText)) {
+                                resultList.add(_store);
+                            } else if (store.contains(searchText)) {
+                                approxResults.add(_store);
+                            }
+                        }
+
+                        for(String result : approxResults) {
+                            resultList.add(result);
+                        }
 
                         // Assign the data to the FilterResults
                         filterResults.values = resultList;
@@ -314,6 +332,19 @@ public class HomepageCustomer extends ActionBarActivity implements
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_employee_homepage, menu);
         return true;
+    }
+
+    private static String CapFirst(String str) {
+        String[] words = str.split(" ");
+        StringBuilder capdString = new StringBuilder();
+        for(int i = 0; i < words.length; i++) {
+            capdString.append(Character.toUpperCase(words[i].charAt(0)));
+            capdString.append(words[i].substring(1));
+            if(i < words.length - 1) {
+                capdString.append(' ');
+            }
+        }
+        return capdString.toString();
     }
 
     /*

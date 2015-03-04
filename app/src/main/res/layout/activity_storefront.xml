@@ -1,21 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.taapesh.prototype.Storefront">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <Button
+    <ListView
+        android:id="@+id/storeResultsView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter Store"
-        android:id="@+id/enterStoreButton"
-        android:layout_alignParentBottom="true"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:height="60dp"
-        android:width="175dp"
-        android:textStyle="bold"
-        android:textSize="17sp"/>
+        android:divider="@android:color/transparent"
+        android:layout_marginTop="20dp"/>
+
 </RelativeLayout>
