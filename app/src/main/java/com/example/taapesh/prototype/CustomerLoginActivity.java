@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 
-public class LoginCustomer extends ActionBarActivity {
+public class CustomerLoginActivity extends ActionBarActivity {
 
     protected EditText userEmail;
     protected EditText userPassword;
@@ -25,7 +25,7 @@ public class LoginCustomer extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.customer_login_activity);
 
         // Get user login fields
         userEmail = (EditText) findViewById(R.id.loginEmail);
@@ -49,7 +49,7 @@ public class LoginCustomer extends ActionBarActivity {
                 // If info is incorrect, show error
 
                 // Temporary: just go to homepage
-                Intent goToHomepage = new Intent(LoginCustomer.this, HomepageCustomer.class);
+                Intent goToHomepage = new Intent(CustomerLoginActivity.this, CustomerHomeActivity.class);
                 startActivity(goToHomepage);
             }
         });
@@ -58,7 +58,7 @@ public class LoginCustomer extends ActionBarActivity {
         businessLoginText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToBusinessLogin = new Intent(LoginCustomer.this, BusinessLogin.class);
+                Intent goToBusinessLogin = new Intent(CustomerLoginActivity.this, BusinessLoginActivity.class);
                 startActivity(goToBusinessLogin);
             }
         });
@@ -67,7 +67,7 @@ public class LoginCustomer extends ActionBarActivity {
         employeeLoginText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToEmployeeLogin = new Intent(LoginCustomer.this, EmployeeLogin.class);
+                Intent goToEmployeeLogin = new Intent(CustomerLoginActivity.this, EmployeeLoginActivity.class);
                 startActivity(goToEmployeeLogin);
             }
         });

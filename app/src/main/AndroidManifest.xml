@@ -25,15 +25,15 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".HomepageCustomer"
+            android:name=".CustomerHomeActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".RegisterCustomer"
+            android:name=".CustomerRegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
         <activity
-            android:name=".LoginCustomer"
+            android:name=".CustomerLoginActivity"
             android:label="@string/title_activity_login" >
         </activity>
         <activity
@@ -46,27 +46,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BusinessLogin"
+            android:name=".BusinessLoginActivity"
             android:label="@string/title_activity_business_login" >
         </activity>
         <activity
-            android:name=".EmployeeLogin"
+            android:name=".EmployeeLoginActivity"
             android:label="@string/title_activity_employee_login" >
         </activity>
         <activity
-            android:name=".EnterStorePassword"
+            android:name=".StorePasswordActivity"
             android:label="@string/title_activity_enter_store_password" >
         </activity>
         <activity
-            android:name=".EmployeeHomepage"
+            android:name=".EmployeeHomeActivity"
             android:label="@string/title_activity_employee_homepage" >
         </activity>
         <activity
-            android:name=".BusinessHomepage"
+            android:name=".BusinessHomeActivity"
             android:label="@string/title_activity_business_homepage" >
         </activity>
         <activity
-            android:name=".Storefront"
+            android:name=".StorefrontActivity"
             android:label="@string/title_activity_storefront" >
         </activity>
         <activity

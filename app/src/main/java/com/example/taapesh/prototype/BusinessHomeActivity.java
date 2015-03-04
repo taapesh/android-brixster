@@ -6,18 +6,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class EmployeeHomepage extends ActionBarActivity {
+public class BusinessHomeActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_employee_homepage);
+        setContentView(R.layout.business_home_activity);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_employee_homepage, menu);
+        getMenuInflater().inflate(R.menu.menu_business_homepage, menu);
         return true;
     }
 

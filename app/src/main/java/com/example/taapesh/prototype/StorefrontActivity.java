@@ -2,10 +2,8 @@ package com.example.taapesh.prototype;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -28,7 +26,7 @@ import android.widget.TextView;
  * their search request. From here, they can click a button to request
  * additional info, or they can click to enter a particular store.
  */
-public class Storefront extends ActionBarActivity {
+public class StorefrontActivity extends ActionBarActivity {
     // Google Places object
     private GooglePlaces googlePlaces;
 
@@ -53,7 +51,7 @@ public class Storefront extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_storefront);
+        setContentView(R.layout.storefront_activity);
 
         // Create Google Places Object
         googlePlaces = new GooglePlaces();
@@ -90,7 +88,7 @@ public class Storefront extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(Storefront.this);
+            pDialog = new ProgressDialog(StorefrontActivity.this);
             pDialog.setMessage("Loading Storefront");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
@@ -141,7 +139,7 @@ public class Storefront extends ActionBarActivity {
 
             // Create custom array adapter and attach it to ListView
             CardAdapter cardAdapter= new CardAdapter(
-                    Storefront.this,
+                    StorefrontActivity.this,
                     R.layout.store_card,
                     stores);
 
@@ -154,12 +152,7 @@ public class Storefront extends ActionBarActivity {
         private final int layoutId;
 
         /*
-         * General constructor
-         *
-         * @param context
-         * @param resource
-         * @param textViewResourceId
-         * @param objects
+         * CardAdapter constructor
          */
         public CardAdapter(final Context context,
                 final int layoutId,

@@ -20,7 +20,7 @@ public class StartActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.start_activity);
 
         goToLoginButton = (Button) findViewById(R.id.goToLoginButton);
         goToRegistrationButton = (Button) findViewById(R.id.goToRegistrationButton);
@@ -30,7 +30,7 @@ public class StartActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 // Go to login page
-                Intent goToLogin = new Intent(StartActivity.this, LoginCustomer.class);
+                Intent goToLogin = new Intent(StartActivity.this, CustomerLoginActivity.class);
                 startActivity(goToLogin);
             }
         });
@@ -40,7 +40,7 @@ public class StartActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 // Go to registration page
-                Intent goToRegistration = new Intent(StartActivity.this, RegisterCustomer.class);
+                Intent goToRegistration = new Intent(StartActivity.this, CustomerRegisterActivity.class);
                 startActivity(goToRegistration);
             }
         });

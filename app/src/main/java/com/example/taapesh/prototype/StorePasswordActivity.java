@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-public class EnterStorePassword extends ActionBarActivity {
+public class StorePasswordActivity extends ActionBarActivity {
 
     protected EditText storePasswordField;
     protected Button employeeLoginButton;
@@ -18,7 +18,7 @@ public class EnterStorePassword extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enter_store_password);
+        setContentView(R.layout.store_password_activity);
 
         storePasswordField = (EditText) findViewById(R.id.storePasswordField);
         employeeLoginButton = (Button) findViewById(R.id.employeeLoginButton);
@@ -32,7 +32,7 @@ public class EnterStorePassword extends ActionBarActivity {
                 //
 
                 // If password is correct, go to Employee Homepage
-                Intent goToEmployeeHomepage = new Intent(EnterStorePassword.this, EmployeeHomepage.class);
+                Intent goToEmployeeHomepage = new Intent(StorePasswordActivity.this, EmployeeHomeActivity.class);
                 startActivity(goToEmployeeHomepage);
             }
         });

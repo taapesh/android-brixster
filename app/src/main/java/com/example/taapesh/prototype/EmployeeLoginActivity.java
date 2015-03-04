@@ -9,30 +9,29 @@ import android.view.View;
 import android.widget.Button;
 
 
-public class BusinessLogin extends ActionBarActivity {
+public class EmployeeLoginActivity extends ActionBarActivity {
 
-    protected Button businessLoginButton;
+    protected Button skipFind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_business_login);
+        setContentView(R.layout.employee_login_activity);
 
-        businessLoginButton = (Button) findViewById(R.id.businessLoginButton);
-        businessLoginButton.setOnClickListener(new View.OnClickListener() {
+        skipFind = (Button) findViewById(R.id.skipFind);
+        skipFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToBusinessHomepage = new Intent(BusinessLogin.this, BusinessHomepage.class);
-                startActivity(goToBusinessHomepage);
+                Intent goToPassEntry = new Intent(EmployeeLoginActivity.this, StorePasswordActivity.class);
+                startActivity(goToPassEntry);
             }
         });
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_business_login, menu);
+        getMenuInflater().inflate(R.menu.menu_employee_login, menu);
         return true;
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="background">#D8D8D8</color>
     <color name="main_green">#118504</color>
     <color name="sa_green">#14a804</color>
@@ -19,8 +20,6 @@
     <color name="oil">#545454</color>
     <color name="water">#4DBFD9</color>
     <color name="layout_bg">#E6E6E6</color>
-
-    <!-- Card Color -->
     <color name="card_stroke">#dddddd</color>
     <color name="card_text_light">#66000000</color>
     <color name="card_text">#ff8d8d8d</color>
@@ -31,11 +30,10 @@
     <color name="card_border">#ffdedede</color>
     <color name="card_shadow">#ffd6d6d6</color>
     <color name="card_light_shadow">#ffe5e5e5</color>
-
     <color name="transparent">#00000000</color>
-    <!-- card colors -->
     <color name="card_background">#ffffff</color>
     <color name="card_shadow_1">#d4d4d4</color>
     <color name="card_shadow_2">#dddddd</color>
     <color name="card_detailing">#eee</color>
+
 </resources>

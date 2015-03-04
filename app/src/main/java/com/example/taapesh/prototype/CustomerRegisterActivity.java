@@ -8,10 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
-import android.widget.Toast;
 
 
-public class RegisterCustomer extends ActionBarActivity {
+public class CustomerRegisterActivity extends ActionBarActivity {
     // UI Elements
     protected EditText userFirstName;
     protected EditText userLastName;
@@ -22,7 +21,7 @@ public class RegisterCustomer extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.customer_register_activity);
 
         // Initialize user registration fields
         userFirstName = (EditText) findViewById(R.id.registerFirstName);
@@ -49,7 +48,7 @@ public class RegisterCustomer extends ActionBarActivity {
                 // If successful, show success message and take user to Homepage
 
                 // Temporary: just go to homepage
-                Intent goToHomepage = new Intent(RegisterCustomer.this, HomepageCustomer.class);
+                Intent goToHomepage = new Intent(CustomerRegisterActivity.this, CustomerHomeActivity.class);
                 startActivity(goToHomepage);
             }
         });

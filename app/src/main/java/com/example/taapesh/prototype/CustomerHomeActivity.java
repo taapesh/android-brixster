@@ -7,9 +7,7 @@ package com.example.taapesh.prototype;
  * Efficiently manage Google Places searches and GPS tracking to
  * optimize API quota and battery usage.
  */
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -39,12 +37,12 @@ import android.location.Location;
 import android.widget.Toast;
 
 
-public class HomepageCustomer extends ActionBarActivity implements
+public class CustomerHomeActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    private static final String TAG = HomepageCustomer.class.getSimpleName();
+    private static final String TAG = CustomerHomeActivity.class.getSimpleName();
 
     // Define a request code to send to Google Play services
     // This code is returned in Activity.onActivityResult
@@ -80,7 +78,7 @@ public class HomepageCustomer extends ActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_homepage_customer);
+        setContentView(R.layout.customer_home_activity);
 
         // Initialize longitude and latitude
         currentLatitude = 0.0;
@@ -120,7 +118,7 @@ public class HomepageCustomer extends ActionBarActivity implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Intent to go to storefront
                 Intent goToStorefront = new Intent(getApplicationContext(),
-                        Storefront.class);
+                        StorefrontActivity.class);
 
                 // Pass store name to new activity
                 goToStorefront.putExtra("store", (String) parent.getItemAtPosition(position));
@@ -309,7 +307,7 @@ public class HomepageCustomer extends ActionBarActivity implements
      * Easy toast maker
      */
     private void MakeToast(String message) {
-        Toast.makeText(HomepageCustomer.this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(CustomerHomeActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
