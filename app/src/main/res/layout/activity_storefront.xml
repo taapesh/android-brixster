@@ -11,6 +11,8 @@
         android:scrollbarStyle="outsideOverlay"
         android:layout_centerHorizontal="true"
         android:divider="@android:color/transparent"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="17dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"/>
 
 </RelativeLayout>
