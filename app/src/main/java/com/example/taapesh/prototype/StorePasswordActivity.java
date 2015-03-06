@@ -22,6 +22,7 @@ public class StorePasswordActivity extends ActionBarActivity {
 
         storePasswordField = (EditText) findViewById(R.id.storePasswordField);
         employeeLoginButton = (Button) findViewById(R.id.employeeLoginButton);
+
         employeeLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

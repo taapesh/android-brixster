@@ -19,7 +19,7 @@
         android:id="@+id/storeDetails"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="17sp"
+        android:textSize="16sp"
         android:layout_marginLeft="10dp"/>
 
 </LinearLayout>

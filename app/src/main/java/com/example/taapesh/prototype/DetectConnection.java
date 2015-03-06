@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+/**
+ * Check all sources of internet for a live connection
+ */
 public class DetectConnection {
     private Context _context;
 
@@ -11,7 +14,6 @@ public class DetectConnection {
         this._context = context;
     }
 
-    // Check all sources of internet for a live connection
     public boolean canConnectToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

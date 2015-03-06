@@ -24,11 +24,9 @@ public class Store {
     public String getAddress() {
         return address;
     }
-
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }

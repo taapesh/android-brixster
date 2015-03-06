@@ -1,6 +1,6 @@
 package com.example.taapesh.prototype;
 
-/*
+/**
  * Handles place searches
  * and place detail requests
  */
@@ -54,7 +54,7 @@ public class GooglePlaces {
         } if (sorted) Log.i("SORTED", "YES SORTED!!!");
     }
 
-    /*
+    /**
      * Use placeID to get store details and create store card
      */
     public ArrayList<String> createStoreCard(String placeID) {
@@ -63,7 +63,7 @@ public class GooglePlaces {
         return resultList;
     }
 
-    /*
+    /**
      * Get Google Places autocomplete results based on user input and location
      */
     public ArrayList<String> getStorePredictions(String name, double lat, double lon) {
@@ -107,7 +107,7 @@ public class GooglePlaces {
             }
         }
 
-        /*
+        /**
          * Parse results and add them to results list
          */
         try {
@@ -152,7 +152,7 @@ public class GooglePlaces {
         return resultList;
     }
 
-    /*
+    /**
      * Get Google Place Details results based on place id
      * Return an array of place information
      */

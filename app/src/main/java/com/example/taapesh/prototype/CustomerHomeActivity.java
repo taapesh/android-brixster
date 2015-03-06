@@ -1,18 +1,24 @@
 package com.example.taapesh.prototype;
 
-/*
- * While page is active, location info is tracked
- * and updated periodically so that the Google Places
- * search will return the most accurate information.
- * Efficiently manage Google Places searches and GPS tracking to
- * optimize API quota and battery usage.
+/**
+ * User location is tracked and updated periodically
+ * User can search for a store and all locations of
+ * that store near them are displayed.
+ * Before user searches for a store, the page shows
+ * favorite stores, suggested stores, and special
+ * deals
  */
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.os.Bundle;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.content.Intent;
 import android.view.MenuItem;
@@ -20,6 +26,8 @@ import android.view.MenuItem;
 // Imports for retrieving Google Places data
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -34,6 +42,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import android.content.IntentSender;
 import android.location.Location;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -62,27 +72,56 @@ public class CustomerHomeActivity extends ActionBarActivity implements
     private LocationRequest mLocationRequest;
 
     // Tracking parameters
-    private static final int UPDATE_INTERVAL = 10;
+    private static final int UPDATE_INTERVAL = 7;
     private static final int FAST_UPDATE_INTERVAL = 1;
 
     // Latitude and Longitude
     private double currentLatitude;
     private double currentLongitude;
 
+    // ArrayList to hold store info
+    private ArrayList<Store> storeResults;
+
+    // ListView to hold store cards
+    private ListView storeResultsView;
+
+    // ListViews for store favorites, suggestions, deals
+    private ListView storeFavorites;
+    private ListView storeSuggestions;
+    private ListView storeDeals;
+
     // Google Places
     private GooglePlaces googlePlaces;
 
+    // Input manager
+    private static InputMethodManager imm;
+
     // UI elements
     private AutoCompleteTextView storeSearchField;
+
+    // Reference to activity
+    private static Activity actRef;
+
+    // Progress dialog
+    ProgressDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customer_home_activity);
 
+        // Set activity reference
+        actRef = CustomerHomeActivity.this;
+
+        // Create Google Places Object
+        googlePlaces = new GooglePlaces();
+
         // Initialize longitude and latitude
         currentLatitude = 0.0;
         currentLongitude = 0.0;
+
+        // Initialize store info ArrayList
+        storeResults = new ArrayList<>();
 
         // Create connection detector and check for available connection
         dc = new DetectConnection(getApplicationContext());
@@ -105,31 +144,182 @@ public class CustomerHomeActivity extends ActionBarActivity implements
                 .setInterval(UPDATE_INTERVAL * 1000)
                 .setFastestInterval(FAST_UPDATE_INTERVAL * 1000);
 
+        // Initialize input method manager
+        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+
+        // Find store results ListView and hide it until customer picks a store
+        storeResultsView = (ListView) findViewById(R.id.storeResultsView);
+        storeResultsView.setVisibility(View.GONE);
+
+        // Attach item clicked listener to ListView
+        storeResultsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get selected store
+                Store selectedStore = (Store) parent.getItemAtPosition(position);
+
+                // Intent to enter store
+                Intent enterStore = new Intent(getApplicationContext(),
+                        StoreBrowseActivity.class);
+
+                // Pass store name and address to new activity
+                enterStore.putExtra("store", selectedStore.getName());
+                enterStore.putExtra("address", selectedStore.getAddress());
+                startActivity(enterStore);
+            }
+        });
+
         // Get store search field and attach it to autocomplete
         storeSearchField = (AutoCompleteTextView) findViewById(R.id.storeSearchField);
         storeSearchField.setAdapter(new StoreSearchAdapter(this, R.layout.list_item));
 
-        /*
-        * ListItem click event
-        * On selecting an item, Storefront activity is launched for that store
+        /**
+        * On selecting a store from autocomplete dropdown
+        * load and show store locations
         */
         storeSearchField.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Intent to go to storefront
-                Intent goToStorefront = new Intent(getApplicationContext(),
-                        StorefrontActivity.class);
+                // Hide the soft keyboard
+                new HideKeyboard().execute();
 
-                // Pass store name to new activity
-                goToStorefront.putExtra("store", (String) parent.getItemAtPosition(position));
-                goToStorefront.putExtra("latitude", currentLatitude);
-                goToStorefront.putExtra("longitude", currentLongitude);
-                startActivity(goToStorefront);
+                // Hide store favorites/deals/suggestions
+
+                // Get selected store name and load store locations asynchronously
+                String storeName = (String) parent.getItemAtPosition(position);
+                new LoadStores().execute(storeName);
             }
         });
     }
 
-    /*
+    /**
+     * Asynchronously get store results using Google Places API
+     * Create progress dialog and dismiss it when job is done
+     */
+    class LoadStores extends AsyncTask<String, String, String> {
+        /**
+         * Before starting background thread show progress dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(CustomerHomeActivity.this);
+            pDialog.setMessage("Loading Storefront");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        /**
+         * Get store information asynchronously
+         * Using google places API
+         */
+        protected String doInBackground(String... args) {
+            storeResults.clear();
+            String storeName = args[0];
+
+            ArrayList<String> storePredictions = googlePlaces.getStorePredictions(
+                    storeName, currentLatitude, currentLongitude);
+
+            Map placeDetails = new HashMap();
+            for (String store : storePredictions) {
+                try {
+                    placeDetails = googlePlaces.getStoreDetails(store);
+                } catch (Exception e) {
+                    // pass
+                }
+
+                // Extract store details from details map
+                if (placeDetails.size() > 0) {
+
+                    // Extract store details
+                    // Create a new store and set its details
+                    String name = placeDetails.get("name").toString();
+                    String address = placeDetails.get("address").toString();
+                    String phone = placeDetails.get("phone_number").toString();
+
+                    Store s = new Store(name, address, phone);
+                    storeResults.add(s);
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task, dismiss the progress dialog
+         * And create the cards for each store. Finish by attaching the
+         * CardArrayAdapter
+         */
+        protected void onPostExecute(String result) {
+            pDialog.dismiss();
+
+            // Create custom array adapter and attach it to ListView
+            CardAdapter cardAdapter= new CardAdapter(
+                    CustomerHomeActivity.this,
+                    R.layout.store_card,
+                    storeResults);
+
+            // Set adapter and show the results
+            storeResultsView.setAdapter(cardAdapter);
+            storeResultsView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public class CardAdapter extends ArrayAdapter<Store> {
+        private final LayoutInflater inflater;
+        private final int layoutId;
+
+        /**
+         * CardAdapter constructor
+         */
+        public CardAdapter(final Context context,
+                           final int layoutId,
+                           final ArrayList<Store> objects) {
+
+            super(context, layoutId, objects);
+
+            this.inflater = LayoutInflater.from(context);
+            this.layoutId = layoutId;
+        }
+
+        @Override
+        public View getView(final int position, final View convertView, final ViewGroup parent) {
+            View itemView = convertView;
+            ViewHolder holder;
+            final Store store = getItem(position);
+
+            if(null == itemView) {
+                itemView = this.inflater.inflate(layoutId, parent, false);
+
+                // Create holder instance and find individual views
+                holder = new ViewHolder();
+                holder.storeName = (TextView) itemView.findViewById(R.id.storeName);
+                holder.storeDetails = (TextView) itemView.findViewById(R.id.storeDetails);
+
+                itemView.setTag(holder);
+            } else {
+                holder = (ViewHolder)itemView.getTag();
+            }
+
+            // Fill store card with details
+            holder.storeName.setText(store.getName());
+            holder.storeDetails.setText(store.getAddress());
+
+            // Return this store card
+            return itemView;
+        }
+
+        /**
+         * Hold store details that are displayed on store card
+         */
+        protected class ViewHolder{
+            protected TextView storeName;
+            protected TextView storeDetails;
+        }
+    }
+
+    /**
      * Custom adapter for store search
      * Searches registered stores for approximate matches
      */
@@ -201,9 +391,9 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         }
     }
 
-    /*
-    * Connect API client on resuming activity
-    */
+    /**
+     * Connect API client on resuming activity
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -211,7 +401,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         mGoogleApiClient.connect();
     }
 
-    /*
+    /**
      * Disconnect API client and stop updates on pausing activity
      */
     @Override
@@ -224,7 +414,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         }
     }
 
-    /*
+    /**
      * Process new location
      */
     private void handleNewLocation(Location location) {
@@ -232,21 +422,21 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         currentLongitude = location.getLongitude();
     }
 
-    /*
+    /**
      * Manually stop checking for location updates
      */
     public void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
-    /*
+    /**
      * Manually start checking for location updates
      */
     public void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
-    /*
+    /**
      * Called automatically when location changes
      */
     @Override
@@ -254,7 +444,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         handleNewLocation(location);
     }
 
-    /*
+    /**
      * On connected, get the latest location information
      * Or start receiving location updates
      */
@@ -276,7 +466,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        /*
+        /**
          * Google Play services can resolve some errors it detects.
          * If the error has a resolution, try sending an Intent to
          * start a Google Play services activity that can resolve
@@ -286,7 +476,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
             try {
                 // Start an Activity that tries to resolve the error
                 connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-                /*
+                /**
                  * Thrown if Google Play services canceled the original
                  * PendingIntent
                  */
@@ -295,7 +485,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
                 e.printStackTrace();
             }
         } else {
-            /*
+            /**
              * If no resolution is available, display a dialog to the
              * user with the error.
              */
@@ -303,7 +493,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         }
     }
 
-    /*
+    /**
      * Easy toast maker
      */
     private void MakeToast(String message) {
@@ -332,35 +522,13 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         return true;
     }
 
-    private static String CapFirst(String str) {
-        String[] words = str.split(" ");
-        StringBuilder capdString = new StringBuilder();
-        for(int i = 0; i < words.length; i++) {
-            capdString.append(Character.toUpperCase(words[i].charAt(0)));
-            capdString.append(words[i].substring(1));
-            if(i < words.length - 1) {
-                capdString.append(' ');
-            }
-        }
-        return capdString.toString();
-    }
-
-    /*
-     * Update current latitude and longitude in the background on separate thread
-     * Not currently implemented
+    /**
+     * Hide soft keyboard asynchronously
      */
-    class UpdateLocation extends AsyncTask<String, String, String> {
+    class HideKeyboard extends AsyncTask<String, String, String> {
         protected String doInBackground(String... args) {
+            imm.hideSoftInputFromWindow(actRef.getCurrentFocus().getWindowToken(), 0);
             return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        protected void onPostExecute(String file_url) {
-
         }
     }
 }

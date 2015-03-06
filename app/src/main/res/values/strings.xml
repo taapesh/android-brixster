@@ -17,15 +17,8 @@
     <string name="title_activity_business_homepage">Business Homepage</string>
     <string name="title_activity_view_storefront">ViewStorefront</string>
 
-    <string name="lbl_you_are_at">YOU ARE AT</string>
-    <string name="btn_get_location">GET MY LOCATION</string>
-    <string name="btn_start_location_updates">START LOCATION UPDATES</string>
-    <string name="btn_stop_location_updates">STOP LOCATION UPDATES</string>
     <string name="title_activity_storefront">Storefront</string>
-    <string name="title_activity_store_entry">StoreEntry</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_card_layout">CardLayoutActivity</string>
+    <string name="title_activity_store_browse">Welcome</string>
+    <string name="title_activity_store_cart">StoreCartActivity</string>
 
 </resources>
