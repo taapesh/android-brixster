@@ -65,13 +65,18 @@
             android:label="@string/title_activity_business_homepage" >
         </activity>
         <activity
-            android:name=".StoreBrowseActivity"
+            android:name=".StoreScanActivity"
             android:label="@string/title_activity_store_browse" >
         </activity>
         <activity
             android:name=".StoreCartActivity"
             android:label="@string/title_activity_store_cart" >
         </activity>
+        <activity
+            android:name=".StoreBrowseActivity"
+            android:label="StoreBrowseActivity" >
+        </activity>
+
     </application>
 
 </manifest>

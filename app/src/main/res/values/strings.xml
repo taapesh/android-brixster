@@ -20,5 +20,6 @@
     <string name="title_activity_storefront">Storefront</string>
     <string name="title_activity_store_browse">Welcome</string>
     <string name="title_activity_store_cart">StoreCartActivity</string>
+    <string name="title_activity_store_scan">StoreScanActivity</string>
 
 </resources>
