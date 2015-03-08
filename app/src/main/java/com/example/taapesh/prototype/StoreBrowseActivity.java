@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 
@@ -32,6 +33,9 @@ public class StoreBrowseActivity extends ActionBarActivity {
     private static int tabBarHeight;
     private static float screenDensity;
 
+    // Tab host
+    private static TabHost th;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +48,10 @@ public class StoreBrowseActivity extends ActionBarActivity {
         cartButton = (ImageButton) findViewById(R.id.cartButton);
         tabBackground = (TextView) findViewById(R.id.tabBackground);
 
+
+
         getScreenDimensions();
+        setUpControlBar();
         setUpTabs();
 
         // Set tab bar click events
@@ -79,7 +86,7 @@ public class StoreBrowseActivity extends ActionBarActivity {
     /**
      * Set tab bar height and tab widths
      */
-    private void setUpTabs() {
+    private void setUpControlBar() {
         tabBackground.getLayoutParams().height = tabBarHeight;
         storeButton.getLayoutParams().height = tabBarHeight;
         storeButton.getLayoutParams().width = tabWidth;
@@ -87,6 +94,32 @@ public class StoreBrowseActivity extends ActionBarActivity {
         cartButton.getLayoutParams().width = tabWidth;
         barcodeButton.getLayoutParams().height = tabBarHeight;
         barcodeButton.getLayoutParams().width = tabWidth;
+    }
+
+    /**
+     * Setup tab subviews
+     */
+    private void setUpTabs() {
+        th = (TabHost) findViewById(R.id.tabHost);
+        th.setup();
+
+        // Setup browse tab
+        TabHost.TabSpec specs = th.newTabSpec("tag1");
+        specs.setContent(R.id.tab1);
+        specs.setIndicator("Browse");
+        th.addTab(specs);
+
+        // Setup deals tab
+        specs = th.newTabSpec("tag2");
+        specs.setContent(R.id.tab2);
+        specs.setIndicator("Deals");
+        th.addTab(specs);
+
+        // Setup store navigation tab
+        specs = th.newTabSpec("tag3");
+        specs.setContent(R.id.tab3);
+        specs.setIndicator("Store Map");
+        th.addTab(specs);
     }
 
     /**
