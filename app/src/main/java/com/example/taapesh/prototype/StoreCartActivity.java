@@ -9,7 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 
 
 public class StoreCartActivity extends ActionBarActivity {
@@ -28,6 +33,27 @@ public class StoreCartActivity extends ActionBarActivity {
     private static final int NUM_TABS = 3;
     private static final int TAB_DIVIDER_WIDTH = 1;
     private static final int TAB_BAR_HEIGHT = 64;
+
+    // Test data
+    private static final String[] productNames = { "Peace Tea Georgia Peach Tea" };
+    private static final String[] productCategories = { "Drinks" };
+    private static final double[] productPrices = { 1.20 };
+    private static final String[] productCodes = { "070847018544" };
+
+    // Keep user's cart saved in the database
+    // But also keep it locally in memory for faster display
+    // Pass cart information from one activity to the next
+    // until user has completed the session
+    private static BigDecimal cartTotal;
+    private static int cartSize;
+    private static ArrayList<Product> itemsInCart;
+
+    // ListView to hold cart contents
+    private static ListView cartContentsView;
+
+    // Button to apply coupon, button to checkout
+
+    // TextView to show total cost
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +76,11 @@ public class StoreCartActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent goToStore = new Intent(
                         StoreCartActivity.this, StoreBrowseActivity.class);
+                goToStore.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToStore.putExtra("hasCart", true);
+                goToStore.putExtra("cartTotal", cartTotal.toString());
+                goToStore.putExtra("cartSize", cartSize);
+                goToStore.putExtra("hasCart", true);
                 startActivity(goToStore);
             }
         });
@@ -59,6 +90,11 @@ public class StoreCartActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent goToScanning = new Intent(
                         StoreCartActivity.this, StoreScanActivity.class);
+                goToScanning.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToScanning.putExtra("hasCart", true);
+                goToScanning.putExtra("cartTotal", cartTotal.toString());
+                goToScanning.putExtra("cartSize", cartSize);
+                goToScanning.putExtra("hasCart", true);
                 startActivity(goToScanning);
             }
         });
@@ -68,9 +104,26 @@ public class StoreCartActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent goToCart = new Intent(
                         StoreCartActivity.this, StoreCartActivity.class);
+                goToCart.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToCart.putExtra("hasCart", true);
+                goToCart.putExtra("cartTotal", cartTotal.toString());
+                goToCart.putExtra("cartSize", cartSize);
+                goToCart.putExtra("hasCart", true);
                 startActivity(goToCart);
             }
         });
+
+        // Get cart information
+        Intent it = getIntent();
+
+        itemsInCart = it.getParcelableArrayListExtra("itemsInCart");
+        cartSize = it.getIntExtra("cartSize", 0);
+        String cartTotalString = it.getStringExtra("cartTotal");
+        if (cartTotalString.isEmpty()) {
+            cartTotal = BigDecimal.ZERO;
+        } else {
+            cartTotal = new BigDecimal(cartTotalString);
+        }
     }
 
     /**
@@ -135,5 +188,38 @@ public class StoreCartActivity extends ActionBarActivity {
     protected void onResume() {
         overridePendingTransition(0,0);
         super.onResume();
+    }
+
+    /**
+     * Remove an item from cart,
+     * remove it locally and from database
+     */
+    private void removeItem(int idx) {
+        itemsInCart.remove(idx);
+
+        cartSize -= 1;
+        updateCartTotal();
+    }
+
+    /**
+     * Update total cost of cart
+     */
+    private void updateCartTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+        for(Product p : itemsInCart) {
+            total = total.add(p.getProductPrice());
+        }
+
+        // Calculate sales and/or coupon discounts
+
+        // Set cart total and display it
+        cartTotal = total;
+    }
+
+    /**
+     * Get current cart total
+     */
+    private BigDecimal getCartTotal() {
+        return cartTotal.setScale(2, RoundingMode.CEILING);
     }
 }

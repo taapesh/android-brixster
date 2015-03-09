@@ -2,6 +2,7 @@ package com.example.taapesh.prototype;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -14,6 +15,10 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
 
 public class StoreBrowseActivity extends ActionBarActivity {
@@ -24,7 +29,7 @@ public class StoreBrowseActivity extends ActionBarActivity {
     private static ImageButton cartButton;
     private static final int NUM_TABS = 3;
     private static final int TAB_DIVIDER_WIDTH = 1;
-    private static final int TAB_BAR_HEIGHT = 64;
+    private static final int TAB_BAR_HEIGHT = 75;
 
     // Screen and tab bar dimensions
     private static int screenWidth;
@@ -36,19 +41,55 @@ public class StoreBrowseActivity extends ActionBarActivity {
     // Tab host
     private static TabHost th;
 
+    // Test data
+    private static final String[] productNames = { "Peace Tea Georgia Peach Tea" };
+    private static final String[] productCategories = { "Drinks" };
+    private static final double[] productPrices = { 1.20 };
+    private static final String[] productCodes = { "070847018544" };
+
+    // Keep user's cart saved in the database
+    // But also keep it locally in memory for faster display
+    // Pass cart information from one activity to the next
+    // until user has completed the session
+    private static BigDecimal cartTotal;
+    private static int cartSize;
+    private static ArrayList<Product> itemsInCart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.store_browse_activity);
         screenDensity = getResources().getDisplayMetrics().density;
 
+        // Check for cart info passed by other activity
+        Intent it = getIntent();
+        boolean hasCart = it.getBooleanExtra("hasCart", false);
+
+        if (hasCart) {
+            // Get cart info
+            cartSize = it.getIntExtra("cartSize", 0);
+
+            // Must first get cart total as String and convert to BigDecimal
+            String cartTotalString = it.getStringExtra("cartTotal");
+            cartTotal = new BigDecimal(cartTotalString);
+
+            // Get items in cart
+            itemsInCart = it.getParcelableArrayListExtra("itemsInCart");
+
+        } else {
+            // Otherwise, initialize cart info
+            // Initialize cart information
+            cartTotal = BigDecimal.ZERO;
+            cartSize = 0;
+            itemsInCart = new ArrayList<>();
+        }
+
+
         // Get tab bar buttons
         storeButton = (ImageButton) findViewById(R.id.storeButton);
         barcodeButton = (ImageButton) findViewById(R.id.barcodeButton);
         cartButton = (ImageButton) findViewById(R.id.cartButton);
         tabBackground = (TextView) findViewById(R.id.tabBackground);
-
-
 
         getScreenDimensions();
         setUpControlBar();
@@ -60,6 +101,10 @@ public class StoreBrowseActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent goToStore = new Intent(
                         StoreBrowseActivity.this, StoreBrowseActivity.class);
+                goToStore.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToStore.putExtra("hasCart", true);
+                goToStore.putExtra("cartTotal", cartTotal.toString());
+                goToStore.putExtra("cartSize", cartSize);
                 startActivity(goToStore);
             }
         });
@@ -69,6 +114,10 @@ public class StoreBrowseActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent goToScanning = new Intent(
                         StoreBrowseActivity.this, StoreScanActivity.class);
+                goToScanning.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToScanning.putExtra("hasCart", true);
+                goToScanning.putExtra("cartTotal", cartTotal.toString());
+                goToScanning.putExtra("cartSize", cartSize);
                 startActivity(goToScanning);
             }
         });
@@ -78,7 +127,29 @@ public class StoreBrowseActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent goToCart = new Intent(
                         StoreBrowseActivity.this, StoreCartActivity.class);
+                goToCart.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToCart.putExtra("hasCart", true);
+                goToCart.putExtra("cartTotal", cartTotal.toString());
+                goToCart.putExtra("cartSize", cartSize);
                 startActivity(goToCart);
+            }
+        });
+
+
+        th.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                int i = th.getCurrentTab();
+
+                Toast.makeText(
+                    StoreBrowseActivity.this,
+                    "On tab " + Integer.toString(i),
+                    Toast.LENGTH_SHORT
+                ).show();
+
+                // Depending on the tab chosen, start/stop
+                // certain services
+
             }
         });
     }

@@ -80,18 +80,18 @@ public class CustomerHomeActivity extends ActionBarActivity implements
     private double currentLongitude;
 
     // ArrayList to hold store info
-    private ArrayList<Store> storeResults;
+    private static ArrayList<Store> storeResults;
 
     // ListView to hold store cards
-    private ListView storeResultsView;
+    private static ListView storeResultsView;
 
     // ListViews for store favorites, suggestions, deals
-    private ListView storeFavorites;
-    private ListView storeSuggestions;
-    private ListView storeDeals;
+    private static ListView storeFavorites;
+    private static ListView storeSuggestions;
+    private static ListView storeDeals;
 
     // Google Places
-    private GooglePlaces googlePlaces;
+    private static GooglePlaces googlePlaces;
 
     // Input manager
     private static InputMethodManager imm;

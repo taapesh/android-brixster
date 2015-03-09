@@ -21,6 +21,10 @@ import com.mirasense.scanditsdk.ScanditSDKBarcodePicker;
 import com.mirasense.scanditsdk.interfaces.ScanditSDK;
 import com.mirasense.scanditsdk.interfaces.ScanditSDKListener;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+
 
 public class StoreScanActivity extends ActionBarActivity
     implements ScanditSDKListener {
@@ -65,6 +69,21 @@ public class StoreScanActivity extends ActionBarActivity
 
     private static RelativeLayout rootView;
 
+    // Test data
+    private static final String[] productNames = { "Peace Tea Georgia Peach Tea" };
+    private static final String[] productCategories = { "Drinks" };
+    private static final BigDecimal[] productPrices = { new BigDecimal(1.20) };
+    private static final String[] productCodes = { "070847018544" };
+    private static final int numProducts = productNames.length;
+
+    // Keep user's cart saved in the database
+    // But also keep it locally in memory for faster display
+    // Pass cart information from one activity to the next
+    // until user has completed the session
+    private static BigDecimal cartTotal;
+    private static int cartSize;
+    private static ArrayList<Product> itemsInCart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +96,16 @@ public class StoreScanActivity extends ActionBarActivity
         Bundle extras = it.getExtras();
         storeName = it.getStringExtra("store");
         storeAddress = it.getStringExtra("address");
+
+        // Get cart information
+        itemsInCart = it.getParcelableArrayListExtra("itemsInCart");
+        cartSize = it.getIntExtra("cartSize", 0);
+        String cartTotalString = it.getStringExtra("cartTotal");
+        if (cartTotalString.isEmpty()) {
+            cartTotal = BigDecimal.ZERO;
+        } else {
+            cartTotal = new BigDecimal(cartTotalString);
+        }
 
         // After store is identified, load store catalog and info asynchronously
 
@@ -92,6 +121,11 @@ public class StoreScanActivity extends ActionBarActivity
             public void onClick(View v) {
                 Intent goToStore = new Intent(
                         StoreScanActivity.this, StoreBrowseActivity.class);
+                goToStore.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToStore.putExtra("hasCart", true);
+                goToStore.putExtra("cartTotal", cartTotal.toString());
+                goToStore.putExtra("cartSize", cartSize);
+                goToStore.putExtra("hasCart", true);
                 startActivity(goToStore);
             }
         });
@@ -101,6 +135,10 @@ public class StoreScanActivity extends ActionBarActivity
             public void onClick(View v) {
                 Intent goToScanning = new Intent(
                         StoreScanActivity.this, StoreScanActivity.class);
+                goToScanning.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToScanning.putExtra("hasCart", true);
+                goToScanning.putExtra("cartTotal", cartTotal.toString());
+                goToScanning.putExtra("cartSize", cartSize);
                 startActivity(goToScanning);
             }
         });
@@ -110,6 +148,10 @@ public class StoreScanActivity extends ActionBarActivity
             public void onClick(View v) {
                 Intent goToCart = new Intent(
                         StoreScanActivity.this, StoreCartActivity.class);
+                goToCart.putParcelableArrayListExtra("itemsInCart", itemsInCart);
+                goToCart.putExtra("hasCart", true);
+                goToCart.putExtra("cartTotal", cartTotal.toString());
+                goToCart.putExtra("cartSize", cartSize);
                 startActivity(goToCart);
             }
         });
@@ -135,7 +177,6 @@ public class StoreScanActivity extends ActionBarActivity
         tabWidth = (screenWidth / NUM_TABS) - dpToPx(TAB_DIVIDER_WIDTH);
         tabBarHeight = dpToPx(TAB_BAR_HEIGHT);
     }
-
 
     /**
      * Convert dp to pixels
@@ -253,9 +294,6 @@ public class StoreScanActivity extends ActionBarActivity
     public void didScanBarcode(String barcode, String symbology) {
         barcode = barcode.trim();
 
-        // Display the decoded barcode
-        Toast.makeText(StoreScanActivity.this, barcode, Toast.LENGTH_SHORT).show();
-
         // Lookup barcode
         lookupProduct(barcode);
     }
@@ -359,9 +397,11 @@ public class StoreScanActivity extends ActionBarActivity
      * Look up scanned product in database
      */
     public void lookupProduct(String barcode) {
-        boolean found = false;
 
-        if (found) {
+        int idx = findProduct(barcode);
+
+
+        if (idx >= 0) {
             // Get product info from database
             String productName;
             String productPrice;
@@ -375,7 +415,7 @@ public class StoreScanActivity extends ActionBarActivity
                 addScannedToCart();
             } else {
                 // Show info card for product
-                showProductCard();
+                showProductCard(idx);
             }
         } else {
             Toast.makeText(StoreScanActivity.this, "Item not found", Toast.LENGTH_SHORT).show();
@@ -386,8 +426,16 @@ public class StoreScanActivity extends ActionBarActivity
      * Display card with product information
      * along with a button to add product to cart
      */
-    public void showProductCard() {
-
+    public void showProductCard(int i) {
+        Product product = new Product(
+                productNames[i], productPrices[i], productCodes[i]);
+        BigDecimal price = (BigDecimal) productPrices[i];
+        Toast.makeText(
+                StoreScanActivity.this,
+                product.getProductName() +"\n"+
+                        product.getProductPrice().setScale(2, RoundingMode.CEILING) +"\n"+
+                "Added to cart",
+                Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -411,5 +459,19 @@ public class StoreScanActivity extends ActionBarActivity
          * item price, and updated cart total.
          * Show option to undo
          */
+    }
+
+    /**
+     * Find product and return index found at
+     */
+    private int findProduct(String code) {
+        for(int i = 0; i < numProducts; i++) {
+            if (productCodes[i].equals(code)) {
+                return i;
+            }
+        }
+
+        // Product not found, return -1
+        return -1;
     }
 }
