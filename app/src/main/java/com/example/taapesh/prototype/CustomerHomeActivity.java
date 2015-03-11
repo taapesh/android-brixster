@@ -14,6 +14,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.content.Intent;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 // Imports for retrieving Google Places data
@@ -109,6 +111,13 @@ public class CustomerHomeActivity extends ActionBarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customer_home_activity);
+
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(R.layout.custom_action_bar);
+
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
 
         // Set activity reference
         actRef = CustomerHomeActivity.this;
@@ -518,7 +527,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_employee_homepage, menu);
+        getMenuInflater().inflate(R.menu.menu_customer_home, menu);
         return true;
     }
 

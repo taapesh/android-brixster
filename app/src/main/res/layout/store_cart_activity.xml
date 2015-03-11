@@ -19,14 +19,14 @@
         android:id="@+id/textView5"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="71dp" />
+        android:layout_marginTop="90dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/storeButton"
-        android:src="@drawable/store_64"
-        android:background="@color/white"
+        android:src="@drawable/store_32"
+        android:background="@drawable/btn_bg"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -34,9 +34,9 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/barcodeButton"
-        android:src="@drawable/barcode_64"
-        android:background="@color/white"
+        android:id="@+id/scanButton"
+        android:src="@drawable/scan_32"
+        android:background="@drawable/btn_bg"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
@@ -44,8 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/cartButton"
-        android:src="@drawable/cart_64"
-        android:background="@color/white"
+        android:src="@drawable/cart_32"
+        android:background="@drawable/btn_bg"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

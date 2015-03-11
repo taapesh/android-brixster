@@ -1,5 +1,6 @@
 package com.example.taapesh.prototype;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Point;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import android.widget.RelativeLayout;
@@ -26,9 +28,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 
 
-public class StoreScanActivity extends ActionBarActivity
+public class StoreScanActivity extends Activity
     implements ScanditSDKListener {
-
     /**
      * If quick scan is enabled, items will be added
      * to cart as soon as they are scanned.
@@ -57,16 +58,24 @@ public class StoreScanActivity extends ActionBarActivity
     private static int tabWidth;
     private static int tabBarHeight;
     private static float screenDensity;
+    private static int addBtnPadding;
 
-    // Tab buttons
-    private static TextView tabBackground;
-    private static ImageButton storeButton;
-    private static ImageButton barcodeButton;
-    private static ImageButton cartButton;
+    // UI Elements
     private static final int NUM_TABS = 3;
     private static final int TAB_DIVIDER_WIDTH = 1;
-    private static final int TAB_BAR_HEIGHT = 64;
+    private static final int TAB_BAR_HEIGHT = 58;
+    private static final int PRODUCT_CARD_HEIGHT = 165;
+    private static final int PRODUCT_CARD_PADDING = 4;
 
+    private static TextView tabBackground;
+    private static ImageButton storeButton;
+    private static ImageButton scanButton;
+    private static ImageButton cartButton;
+
+    private static ImageButton menuToggleBtn;
+    private static View productCardView;
+    private static ImageButton confirmBtn;
+    private static ImageButton cancelBtn;
     private static RelativeLayout rootView;
 
     // Test data
@@ -111,7 +120,7 @@ public class StoreScanActivity extends ActionBarActivity
 
         // Get tab bar buttons
         storeButton = (ImageButton) findViewById(R.id.storeButton);
-        barcodeButton = (ImageButton) findViewById(R.id.barcodeButton);
+        scanButton = (ImageButton) findViewById(R.id.scanButton);
         cartButton = (ImageButton) findViewById(R.id.cartButton);
         tabBackground = (TextView) findViewById(R.id.tabBackground);
 
@@ -130,7 +139,7 @@ public class StoreScanActivity extends ActionBarActivity
             }
         });
 
-        barcodeButton.setOnClickListener(new View.OnClickListener() {
+        scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToScanning = new Intent(
@@ -156,6 +165,12 @@ public class StoreScanActivity extends ActionBarActivity
             }
         });
 
+        // Setup UI elements
+        menuToggleBtn = (ImageButton) findViewById(R.id.menuButton);
+        productCardView = findViewById(R.id.productCard);
+        confirmBtn = (ImageButton) findViewById(R.id.confirmBtn);
+        cancelBtn = (ImageButton) findViewById(R.id.cancelBtn);
+        //productCardView.setVisibility(View.GONE);
 
         getScreenDimensions();
         // Initialize scanner
@@ -176,6 +191,30 @@ public class StoreScanActivity extends ActionBarActivity
         // Setup tab button widths, subtract value to set divider length
         tabWidth = (screenWidth / NUM_TABS) - dpToPx(TAB_DIVIDER_WIDTH);
         tabBarHeight = dpToPx(TAB_BAR_HEIGHT);
+        addBtnPadding = screenWidth / 3;
+    }
+
+    /**
+     * Setup UI elements on top of scan view
+     */
+    private void setupUI() {
+        int btnSize = dpToPx(58);
+        RelativeLayout.LayoutParams rParams = new RelativeLayout.LayoutParams(
+                btnSize, btnSize);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        rootView.removeView(menuToggleBtn);
+        rootView.addView(menuToggleBtn, rParams);
+
+        rParams = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, dpToPx(PRODUCT_CARD_HEIGHT));
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rParams.bottomMargin = tabBarHeight + dpToPx(PRODUCT_CARD_PADDING);
+        rootView.removeView(productCardView);
+        rootView.addView(productCardView, rParams);
+
+        cancelBtn.setPadding(0, 0, addBtnPadding, 0);
+        confirmBtn.setPadding(addBtnPadding, 0, 0, 0);
     }
 
     /**
@@ -193,7 +232,7 @@ public class StoreScanActivity extends ActionBarActivity
     private void setUpTabs() {
         // Add tab bar background to root view
         RelativeLayout.LayoutParams rParams = new RelativeLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, tabBarHeight+1);
+                LayoutParams.MATCH_PARENT, tabBarHeight+dpToPx(TAB_DIVIDER_WIDTH));
         rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
         rootView.removeView(tabBackground);
@@ -212,8 +251,8 @@ public class StoreScanActivity extends ActionBarActivity
                 tabWidth, tabBarHeight);
         rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         rParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        rootView.removeView(barcodeButton);
-        rootView.addView(barcodeButton, rParams);
+        rootView.removeView(scanButton);
+        rootView.addView(scanButton, rParams);
 
         // Add cart button to root view
         rParams = new RelativeLayout.LayoutParams(
@@ -254,6 +293,9 @@ public class StoreScanActivity extends ActionBarActivity
 
         // Add tab bar on top of scanner view
         setUpTabs();
+
+        // Setup UI on top of the scanner view
+        setupUI();
 
         mPicker = picker;
 
@@ -429,13 +471,17 @@ public class StoreScanActivity extends ActionBarActivity
     public void showProductCard(int i) {
         Product product = new Product(
                 productNames[i], productPrices[i], productCodes[i]);
-        BigDecimal price = (BigDecimal) productPrices[i];
+        BigDecimal price = productPrices[i];
+
+
         Toast.makeText(
                 StoreScanActivity.this,
                 product.getProductName() +"\n"+
                         product.getProductPrice().setScale(2, RoundingMode.CEILING) +"\n"+
                 "Added to cart",
                 Toast.LENGTH_LONG).show();
+
+        // Display product cart with product information, along with button to add to cart
     }
 
     /**

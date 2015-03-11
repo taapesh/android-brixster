@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,11 +26,11 @@ public class StoreBrowseActivity extends ActionBarActivity {
     // Tab buttons
     private static TextView tabBackground;
     private static ImageButton storeButton;
-    private static ImageButton barcodeButton;
+    private static ImageButton scanButton;
     private static ImageButton cartButton;
     private static final int NUM_TABS = 3;
     private static final int TAB_DIVIDER_WIDTH = 1;
-    private static final int TAB_BAR_HEIGHT = 75;
+    private static final int TAB_BAR_HEIGHT = 58;
 
     // Screen and tab bar dimensions
     private static int screenWidth;
@@ -87,7 +88,7 @@ public class StoreBrowseActivity extends ActionBarActivity {
 
         // Get tab bar buttons
         storeButton = (ImageButton) findViewById(R.id.storeButton);
-        barcodeButton = (ImageButton) findViewById(R.id.barcodeButton);
+        scanButton = (ImageButton) findViewById(R.id.scanButton);
         cartButton = (ImageButton) findViewById(R.id.cartButton);
         tabBackground = (TextView) findViewById(R.id.tabBackground);
 
@@ -109,7 +110,7 @@ public class StoreBrowseActivity extends ActionBarActivity {
             }
         });
 
-        barcodeButton.setOnClickListener(new View.OnClickListener() {
+        scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToScanning = new Intent(
@@ -158,13 +159,13 @@ public class StoreBrowseActivity extends ActionBarActivity {
      * Set tab bar height and tab widths
      */
     private void setUpControlBar() {
-        tabBackground.getLayoutParams().height = tabBarHeight;
+        tabBackground.getLayoutParams().height = tabBarHeight + dpToPx(TAB_DIVIDER_WIDTH);
         storeButton.getLayoutParams().height = tabBarHeight;
-        storeButton.getLayoutParams().width = tabWidth;
+        storeButton.getLayoutParams().width = tabWidth - dpToPx(TAB_DIVIDER_WIDTH);
         cartButton.getLayoutParams().height = tabBarHeight;
-        cartButton.getLayoutParams().width = tabWidth;
-        barcodeButton.getLayoutParams().height = tabBarHeight;
-        barcodeButton.getLayoutParams().width = tabWidth;
+        cartButton.getLayoutParams().width = tabWidth - dpToPx(TAB_DIVIDER_WIDTH);
+        scanButton.getLayoutParams().height = tabBarHeight;
+        scanButton.getLayoutParams().width = tabWidth;
     }
 
     /**
@@ -205,7 +206,7 @@ public class StoreBrowseActivity extends ActionBarActivity {
         screenHeight = size.y;
 
         // Setup tab button widths, subtract value to set divider length
-        tabWidth = (screenWidth / NUM_TABS) - dpToPx(TAB_DIVIDER_WIDTH);
+        tabWidth = (screenWidth / NUM_TABS);
         tabBarHeight = dpToPx(TAB_BAR_HEIGHT);
     }
 

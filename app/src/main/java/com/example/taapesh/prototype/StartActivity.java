@@ -1,17 +1,26 @@
 package com.example.taapesh.prototype;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 /**
  * Page seen when user opens app for first time or is logged out
  */
-public class StartActivity extends ActionBarActivity {
+public class StartActivity extends Activity {
+    // Screen and tab bar dimensions
+    private static int screenWidth;
+    private static int screenHeight;
+    private static float screenDensity;
 
     // Action buttons
     protected Button goToLoginButton;
@@ -21,6 +30,7 @@ public class StartActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_activity);
+        screenDensity = getResources().getDisplayMetrics().density;
 
         goToLoginButton = (Button) findViewById(R.id.goToLoginButton);
         goToRegistrationButton = (Button) findViewById(R.id.goToRegistrationButton);
@@ -44,8 +54,47 @@ public class StartActivity extends ActionBarActivity {
                 startActivity(goToRegistration);
             }
         });
+
+        setupUI();
     }
 
+
+    /**
+     * Get all screen dimensions and setup tab bar dimensions
+     */
+    private void setupUI() {
+        // Get screen dimensions
+        WindowManager w = getWindowManager();
+        Point size = new Point();
+        w.getDefaultDisplay().getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
+
+        int btnWidth = (int) (screenWidth / 2 - dpToPx(1)/2.0f);
+        int btnHeight = dpToPx(60);
+        Button loginBtn = (Button) findViewById(R.id.goToLoginButton);
+        Button registerBtn = (Button) findViewById(R.id.goToRegistrationButton);
+
+        // Set login and registration button specs
+        RelativeLayout.LayoutParams rParams = new RelativeLayout.LayoutParams(
+            btnWidth, btnHeight);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        loginBtn.setLayoutParams(rParams);
+
+        rParams = new RelativeLayout.LayoutParams(
+                btnWidth, btnHeight);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        registerBtn.setLayoutParams(rParams);
+    }
+
+    /**
+     * Convert dp to pixels
+     */
+    private int dpToPx(int dp) {
+        return Math.round((float)dp * screenDensity);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

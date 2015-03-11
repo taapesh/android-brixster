@@ -5,6 +5,16 @@
     tools:context="com.example.taapesh.prototype.StoreScanActivity"
     android:background="@color/background">
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/menuButton"
+        android:src="@drawable/menu_32"
+        android:background="#80E1E4E4"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -16,21 +26,81 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/storeButton"
-        android:src="@drawable/store_64"
-        android:background="@color/white" />
+        android:src="@drawable/store_32"
+        android:background="@drawable/btn_bg" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/barcodeButton"
-        android:src="@drawable/barcode_64"
-        android:background="@color/white" />
+        android:id="@+id/scanButton"
+        android:src="@drawable/scan_32"
+        android:background="@drawable/btn_bg" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/cartButton"
-        android:src="@drawable/cart_64"
-        android:background="@color/white" />
+        android:src="@drawable/cart_32"
+        android:background="@drawable/btn_bg" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg"
+        android:id="@+id/productCard"
+        android:padding="0dp">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="18dp"
+            android:text="Peace Tea Georgia Peach Tea"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/productPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            android:text="$1.20"
+            android:layout_below="@+id/productName"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="5dp"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/confirmBtn"
+            android:src="@drawable/confirm_64"
+            android:background="@color/transparent"
+            android:tint="@color/main_green"
+            android:layout_below="@+id/productPrice"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="110dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancelBtn"
+            android:src="@drawable/cancel_64"
+            android:background="@color/transparent"
+            android:tint="@color/deep_red"
+            android:layout_below="@+id/productPrice"
+            android:layout_alignParentRight="true"
+            android:paddingRight="110dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp" />
+
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

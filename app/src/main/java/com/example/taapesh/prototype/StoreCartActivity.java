@@ -28,11 +28,11 @@ public class StoreCartActivity extends ActionBarActivity {
     // Tab buttons
     private static TextView tabBackground;
     private static ImageButton storeButton;
-    private static ImageButton barcodeButton;
+    private static ImageButton scanButton;
     private static ImageButton cartButton;
     private static final int NUM_TABS = 3;
     private static final int TAB_DIVIDER_WIDTH = 1;
-    private static final int TAB_BAR_HEIGHT = 64;
+    private static final int TAB_BAR_HEIGHT = 58;
 
     // Test data
     private static final String[] productNames = { "Peace Tea Georgia Peach Tea" };
@@ -63,7 +63,7 @@ public class StoreCartActivity extends ActionBarActivity {
 
         // Get tab bar buttons
         storeButton = (ImageButton) findViewById(R.id.storeButton);
-        barcodeButton = (ImageButton) findViewById(R.id.barcodeButton);
+        scanButton = (ImageButton) findViewById(R.id.scanButton);
         cartButton = (ImageButton) findViewById(R.id.cartButton);
         tabBackground = (TextView) findViewById(R.id.tabBackground);
 
@@ -85,7 +85,7 @@ public class StoreCartActivity extends ActionBarActivity {
             }
         });
 
-        barcodeButton.setOnClickListener(new View.OnClickListener() {
+        scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToScanning = new Intent(
@@ -130,13 +130,13 @@ public class StoreCartActivity extends ActionBarActivity {
      * Set tab bar height and tab widths
      */
     private void setUpTabs() {
-        tabBackground.getLayoutParams().height = tabBarHeight;
+        tabBackground.getLayoutParams().height = tabBarHeight + dpToPx(TAB_DIVIDER_WIDTH);
         storeButton.getLayoutParams().height = tabBarHeight;
         storeButton.getLayoutParams().width = tabWidth;
         cartButton.getLayoutParams().height = tabBarHeight;
         cartButton.getLayoutParams().width = tabWidth;
-        barcodeButton.getLayoutParams().height = tabBarHeight;
-        barcodeButton.getLayoutParams().width = tabWidth;
+        scanButton.getLayoutParams().height = tabBarHeight;
+        scanButton.getLayoutParams().width = tabWidth;
     }
 
     /**

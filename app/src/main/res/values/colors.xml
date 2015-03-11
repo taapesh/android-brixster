@@ -7,7 +7,6 @@
     <color name="accent_green">#97e08f</color>
     <color name="alt_green">#619924</color>
     <color name="dark_green">#4E7A1D</color>
-    <color name="btn_bg">#3e4a56</color>
     <color name="divider_color">#C8C8C8</color>
     <color name="green">#00ff00</color>
     <color name="white">#ffffff</color>
@@ -35,5 +34,7 @@
     <color name="card_shadow_1">#d4d4d4</color>
     <color name="card_shadow_2">#dddddd</color>
     <color name="card_detailing">#eee</color>
+    <color name="btn_bg">#ecf0f1</color>
+    <color name="deep_red">#9A2E22</color>
 
 </resources>
