@@ -17,7 +17,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -33,7 +33,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:fontFamily="sans-serif"/>
 
     <Button
@@ -76,6 +76,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/registerPassword"
         android:layout_alignEnd="@+id/registerPassword"
-        android:layout_marginTop="25dp"/>
+        android:layout_marginTop="30dp"/>
 
 </RelativeLayout>

@@ -58,7 +58,6 @@ public class StartActivity extends Activity {
         setupUI();
     }
 
-
     /**
      * Get all screen dimensions and setup tab bar dimensions
      */
@@ -71,7 +70,7 @@ public class StartActivity extends Activity {
         screenHeight = size.y;
 
         int btnWidth = (int) (screenWidth / 2 - dpToPx(1)/2.0f);
-        int btnHeight = dpToPx(60);
+        int btnHeight = dpToPx(68);
         Button loginBtn = (Button) findViewById(R.id.goToLoginButton);
         Button registerBtn = (Button) findViewById(R.id.goToRegistrationButton);
 

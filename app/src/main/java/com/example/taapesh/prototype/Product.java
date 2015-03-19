@@ -10,13 +10,18 @@ public class Product implements Parcelable {
     private BigDecimal productPrice;
     private String productCode;
 
-    private int mData;
-
-    // Store constructor
+    // Product constructor
     public Product(String name, BigDecimal price, String code) {
         this.productName = name;
         this.productPrice = price;
         this.productCode = code;
+    }
+
+    // Product parcel constructor
+    public Product(Parcel p){
+        setProductName(p.readString());
+        setProductPrice(new BigDecimal(p.readString()));
+        setProductCode(p.readString());
     }
 
     public BigDecimal getProductPrice() {
@@ -47,7 +52,23 @@ public class Product implements Parcelable {
         return 0;
     }
 
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(mData);
+
+    public void writeToParcel(Parcel des, int flags) {
+        des.writeString(getProductName());
+        des.writeString(getProductPrice().toString());
+        des.writeString(getProductCode());
+
     }
+
+    public static final Parcelable.Creator<Product> CREATOR = new Creator<Product>() {
+
+        public Product createFromParcel(Parcel source) {
+            return new Product(source);
+        }
+
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+
+    };
 }

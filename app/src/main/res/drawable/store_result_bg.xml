@@ -10,15 +10,15 @@
 
     <item>
         <shape>
-            <padding android:top="1dp" android:right="1dp" android:bottom="1dp" android:left="1dp" />
+            <padding android:top="1dp" android:right="2dp" android:bottom="2dp" android:left="1dp" />
             <solid android:color="@color/card_shadow_1" />
-            <corners android:radius="5dp" />
+            <corners android:radius="7dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <padding android:top="1dp" android:right="1dp" android:bottom="2dp" android:left="1dp" />
-            <solid android:color="@color/search_box_shadow" />
+            <padding android:top="1dp" android:right="2dp" android:bottom="2dp" android:left="1dp" />
+            <solid android:color="@color/store_card_shadow" />
             <corners android:radius="7dp" />
         </shape>
     </item>

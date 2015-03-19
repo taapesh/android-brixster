@@ -1,47 +1,43 @@
 package com.example.taapesh.prototype;
 
 import android.graphics.Point;
-import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
+import android.widget.RelativeLayout;
 
 public class CustomerLoginActivity extends ActionBarActivity{
     protected EditText userEmail;
     protected EditText userPassword;
-    protected CheckBox rememberMe;
     protected Button loginButton;
 
-    protected TextView businessLoginText;
-    protected TextView employeeLoginText;
+    // Screen and tab bar dimensions
+    private static int screenWidth;
+    private static int screenHeight;
+    private static float screenDensity;
+
+    private static Button employeeLoginBtn;
+    private static Button businessLoginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customer_login_activity);
 
+        screenDensity = getResources().getDisplayMetrics().density;
+
         // Get user login fields
         userEmail = (EditText) findViewById(R.id.loginEmail);
         userPassword = (EditText) findViewById(R.id.loginPassword);
-        rememberMe = (CheckBox) findViewById(R.id.rememberMeCheckBox);
         loginButton = (Button) findViewById(R.id.loginButton);
-
-        // Get business and employee login links
-        businessLoginText = (TextView) findViewById(R.id.businessLogin);
-        employeeLoginText = (TextView) findViewById(R.id.employeeLogin);
 
         // Create listener for login button
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -60,8 +56,11 @@ public class CustomerLoginActivity extends ActionBarActivity{
             }
         });
 
+        businessLoginBtn = (Button) findViewById(R.id.businessLoginButton);
+        employeeLoginBtn = (Button) findViewById(R.id.employeeLoginButton);
+
         // Alternate login for businesses
-        businessLoginText.setOnClickListener(new View.OnClickListener() {
+        businessLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToBusinessLogin = new Intent(CustomerLoginActivity.this, BusinessLoginActivity.class);
@@ -70,19 +69,21 @@ public class CustomerLoginActivity extends ActionBarActivity{
         });
 
         // Alternate login for employees
-        employeeLoginText.setOnClickListener(new View.OnClickListener() {
+        employeeLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent goToEmployeeLogin = new Intent(CustomerLoginActivity.this, EmployeeLoginActivity.class);
                 startActivity(goToEmployeeLogin);
             }
         });
+
+        setupUI();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
+        getMenuInflater().inflate(R.menu.default_menu, menu);
         return true;
     }
 
@@ -99,5 +100,40 @@ public class CustomerLoginActivity extends ActionBarActivity{
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Get all screen dimensions and setup tab bar dimensions
+     */
+    private void setupUI() {
+        // Get screen dimensions
+        WindowManager w = getWindowManager();
+        Point size = new Point();
+        w.getDefaultDisplay().getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
+
+        int btnWidth = (int) (screenWidth / 2 - dpToPx(1)/2.0f);
+        int btnHeight = dpToPx(68);
+
+        // Set login and registration button specs
+        RelativeLayout.LayoutParams rParams = new RelativeLayout.LayoutParams(
+                btnWidth, btnHeight);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        businessLoginBtn.setLayoutParams(rParams);
+
+        rParams = new RelativeLayout.LayoutParams(
+                btnWidth, btnHeight);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        employeeLoginBtn.setLayoutParams(rParams);
+    }
+
+    /**
+     * Convert dp to pixels
+     */
+    private int dpToPx(int dp) {
+        return Math.round((float)dp * screenDensity);
     }
 }

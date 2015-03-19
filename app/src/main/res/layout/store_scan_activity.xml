@@ -27,21 +27,24 @@
         android:layout_height="wrap_content"
         android:id="@+id/storeButton"
         android:src="@drawable/store_32"
-        android:background="@drawable/btn_bg" />
+        android:background="@drawable/btn_bg"
+        android:tint="@color/tab_icon"/>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/scanButton"
         android:src="@drawable/scan_32"
-        android:background="@drawable/btn_bg" />
+        android:background="@drawable/btn_bg"
+        android:tint="@color/tab_icon"/>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/cartButton"
         android:src="@drawable/cart_32"
-        android:background="@drawable/btn_bg" />
+        android:background="@drawable/btn_bg"
+        android:tint="@color/tab_icon"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -76,13 +79,12 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/confirmBtn"
-            android:src="@drawable/confirm_64"
+            android:id="@+id/confirmBg"
+            android:src="@drawable/circle_bg"
             android:background="@color/transparent"
-            android:tint="@color/main_green"
+            android:tint="@color/white"
             android:layout_below="@+id/productPrice"
             android:layout_alignParentLeft="true"
-            android:paddingLeft="110dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"/>
 
@@ -94,13 +96,21 @@
             android:background="@color/transparent"
             android:tint="@color/deep_red"
             android:layout_below="@+id/productPrice"
-            android:layout_alignParentRight="true"
-            android:paddingRight="110dp"
+            android:layout_alignParentLeft="true"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp" />
 
-
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/confirmBtn"
+            android:src="@drawable/confirm_64"
+            android:background="@color/transparent"
+            android:tint="@color/main_green"
+            android:layout_below="@+id/productPrice"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"/>
 
     </RelativeLayout>
-
 </RelativeLayout>

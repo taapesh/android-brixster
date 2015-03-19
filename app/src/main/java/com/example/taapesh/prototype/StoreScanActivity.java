@@ -51,6 +51,7 @@ public class StoreScanActivity extends Activity
     private static String storeAddress;
 
     private static final String SCANDIT_API_KEY = "RM7dYB+aa4yeb8axHN2SVH+gyyr20c5sF0LQHztKorY";
+    private static final String SEMANTICS_API_KEY = "SEM32C3AFE01CE87C927BA6372725303B778";
 
     // Screen and tab bar dimensions
     private static int screenWidth;
@@ -58,7 +59,6 @@ public class StoreScanActivity extends Activity
     private static int tabWidth;
     private static int tabBarHeight;
     private static float screenDensity;
-    private static int addBtnPadding;
 
     // UI Elements
     private static final int NUM_TABS = 3;
@@ -74,6 +74,14 @@ public class StoreScanActivity extends Activity
 
     private static ImageButton menuToggleBtn;
     private static View productCardView;
+    private static TextView productNameText;
+    private static TextView productPriceText;
+
+    // Scanned product info
+    private static String productName;
+    private static String productPrice;
+    private static String productCode;
+
     private static ImageButton confirmBtn;
     private static ImageButton cancelBtn;
     private static RelativeLayout rootView;
@@ -139,19 +147,6 @@ public class StoreScanActivity extends Activity
             }
         });
 
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent goToScanning = new Intent(
-                        StoreScanActivity.this, StoreScanActivity.class);
-                goToScanning.putParcelableArrayListExtra("itemsInCart", itemsInCart);
-                goToScanning.putExtra("hasCart", true);
-                goToScanning.putExtra("cartTotal", cartTotal.toString());
-                goToScanning.putExtra("cartSize", cartSize);
-                startActivity(goToScanning);
-            }
-        });
-
         cartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +154,7 @@ public class StoreScanActivity extends Activity
                         StoreScanActivity.this, StoreCartActivity.class);
                 goToCart.putParcelableArrayListExtra("itemsInCart", itemsInCart);
                 goToCart.putExtra("hasCart", true);
-                goToCart.putExtra("cartTotal", cartTotal.toString());
+                goToCart.putExtra("cartTotal", cartTotal.setScale(2, RoundingMode.CEILING).toString());
                 goToCart.putExtra("cartSize", cartSize);
                 startActivity(goToCart);
             }
@@ -168,9 +163,28 @@ public class StoreScanActivity extends Activity
         // Setup UI elements
         menuToggleBtn = (ImageButton) findViewById(R.id.menuButton);
         productCardView = findViewById(R.id.productCard);
+        productNameText = (TextView) findViewById(R.id.productName);
+        productPriceText = (TextView) findViewById(R.id.productPrice);
         confirmBtn = (ImageButton) findViewById(R.id.confirmBtn);
         cancelBtn = (ImageButton) findViewById(R.id.cancelBtn);
-        //productCardView.setVisibility(View.GONE);
+        productCardView.setVisibility(View.GONE);
+
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                productCardView.setVisibility(View.GONE);
+                Toast.makeText(StoreScanActivity.this,
+                        "Added to cart", Toast.LENGTH_SHORT).show();
+                addProductToCart();
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                productCardView.setVisibility(View.GONE);
+            }
+        });
 
         getScreenDimensions();
         // Initialize scanner
@@ -189,9 +203,8 @@ public class StoreScanActivity extends Activity
         screenHeight = size.y;
 
         // Setup tab button widths, subtract value to set divider length
-        tabWidth = (screenWidth / NUM_TABS) - dpToPx(TAB_DIVIDER_WIDTH);
+        tabWidth = (screenWidth / NUM_TABS);
         tabBarHeight = dpToPx(TAB_BAR_HEIGHT);
-        addBtnPadding = screenWidth / 3;
     }
 
     /**
@@ -199,6 +212,9 @@ public class StoreScanActivity extends Activity
      */
     private void setupUI() {
         int btnSize = dpToPx(58);
+        int btnSidePadding = (int) (screenWidth / 3.5f);
+        int btnBottomPadding = dpToPx(20);
+
         RelativeLayout.LayoutParams rParams = new RelativeLayout.LayoutParams(
                 btnSize, btnSize);
         rParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -213,8 +229,22 @@ public class StoreScanActivity extends Activity
         rootView.removeView(productCardView);
         rootView.addView(productCardView, rParams);
 
-        cancelBtn.setPadding(0, 0, addBtnPadding, 0);
-        confirmBtn.setPadding(addBtnPadding, 0, 0, 0);
+        btnSize = dpToPx(64);
+        rParams = new RelativeLayout.LayoutParams(
+                btnSize, btnSize);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rParams.leftMargin = btnSidePadding;
+        rParams.bottomMargin = btnBottomPadding;
+        cancelBtn.setLayoutParams(rParams);
+
+        rParams = new RelativeLayout.LayoutParams(
+                btnSize, btnSize);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rParams.rightMargin = btnSidePadding;
+        rParams.bottomMargin = btnBottomPadding;
+        confirmBtn.setLayoutParams(rParams);
     }
 
     /**
@@ -240,7 +270,7 @@ public class StoreScanActivity extends Activity
 
         // Add store button to root view
         rParams = new RelativeLayout.LayoutParams(
-                tabWidth, tabBarHeight);
+                tabWidth  - dpToPx(TAB_DIVIDER_WIDTH), tabBarHeight);
         rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         rParams.addRule(RelativeLayout.ALIGN_LEFT);
         rootView.removeView(storeButton);
@@ -256,7 +286,7 @@ public class StoreScanActivity extends Activity
 
         // Add cart button to root view
         rParams = new RelativeLayout.LayoutParams(
-                tabWidth, tabBarHeight);
+                tabWidth  - dpToPx(TAB_DIVIDER_WIDTH), tabBarHeight);
         rParams.addRule(RelativeLayout.ALIGN_BOTTOM);
         rParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         rParams.addRule(RelativeLayout.ALIGN_RIGHT);
@@ -439,26 +469,10 @@ public class StoreScanActivity extends Activity
      * Look up scanned product in database
      */
     public void lookupProduct(String barcode) {
+        boolean found = findProduct(barcode);
 
-        int idx = findProduct(barcode);
+        if (found) {
 
-
-        if (idx >= 0) {
-            // Get product info from database
-            String productName;
-            String productPrice;
-            String productDescription;
-            String productDiscount;
-            String pricePerUnit;
-            String pricePerPound;
-
-            if (quickScan) {
-                // If quick scan is enabled, add item to card
-                addScannedToCart();
-            } else {
-                // Show info card for product
-                showProductCard(idx);
-            }
         } else {
             Toast.makeText(StoreScanActivity.this, "Item not found", Toast.LENGTH_SHORT).show();
         }
@@ -468,56 +482,54 @@ public class StoreScanActivity extends Activity
      * Display card with product information
      * along with a button to add product to cart
      */
-    public void showProductCard(int i) {
-        Product product = new Product(
-                productNames[i], productPrices[i], productCodes[i]);
-        BigDecimal price = productPrices[i];
+    public void showProductCard(String name, String price) {
+        productNameText.setText(name);
+        productPriceText.setText("$"+price);
+        productCardView.setVisibility(View.VISIBLE);
 
-
-        Toast.makeText(
-                StoreScanActivity.this,
-                product.getProductName() +"\n"+
-                        product.getProductPrice().setScale(2, RoundingMode.CEILING) +"\n"+
-                "Added to cart",
-                Toast.LENGTH_LONG).show();
-
-        // Display product cart with product information, along with button to add to cart
+        // Display product card with product information, along with button to add to cart
     }
 
     /**
-     * Add the scanned item to cart
+     * Attempt to find product from all sources of info
      */
-    public void addScannedToCart() {
-        /**
-         * Display item name that was added
-         * The item price, and updated cart total.
-         * Show option to undo.
-         */
-    }
+    private boolean findProduct(String code) {
+        boolean found = semanticsSearch(code);
 
-    /**
-     * Add searched item to cart
-     * from the item view interface
-     */
-    public void addSearchedToCart() {
-        /**
-         * Display item name that was added,
-         * item price, and updated cart total.
-         * Show option to undo
-         */
-    }
+        // If product not found using API
+        if (!found) {
+            // Attempt to find product info from database
+            found = true;
+            productName = "Peace Tea Georgia Peach Tea";
+            productPrice = "1.20";
+            productCode = code;
 
-    /**
-     * Find product and return index found at
-     */
-    private int findProduct(String code) {
-        for(int i = 0; i < numProducts; i++) {
-            if (productCodes[i].equals(code)) {
-                return i;
+            if (found) {
+                // Process found product
+                showProductCard(productName, productPrice);
             }
         }
 
-        // Product not found, return -1
-        return -1;
+        // Return found
+        return found;
     }
+
+    /**
+     * Attempt to search for product using Semantics3 API
+     */
+    private boolean semanticsSearch(String barcode) {
+        return false;
+    }
+
+    /**
+     * Create a new product and add it to cart
+     */
+    private void addProductToCart() {
+        BigDecimal price = new BigDecimal(productPrice);
+        itemsInCart.add(new Product(productName, price, productCode));
+        cartTotal = cartTotal.add(price);
+        cartSize++;
+    }
+
+    //
 }

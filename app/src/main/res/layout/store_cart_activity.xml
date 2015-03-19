@@ -4,6 +4,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.taapesh.prototype.StoreCartActivity">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Checkout"
+        android:id="@+id/checkoutBtn"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:width="150dp"
+        android:height="55dp"/>
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -16,7 +27,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="This is your cart"
-        android:id="@+id/textView5"
+        android:id="@+id/cartInfo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="90dp" />
@@ -29,7 +40,8 @@
         android:background="@drawable/btn_bg"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:tint="@color/tab_icon"/>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -38,7 +50,8 @@
         android:src="@drawable/scan_32"
         android:background="@drawable/btn_bg"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:tint="@color/tab_icon"/>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -48,6 +61,6 @@
         android:background="@drawable/btn_bg"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
+        android:layout_alignParentEnd="true"
+        android:tint="@color/tab_icon"/>
 </RelativeLayout>

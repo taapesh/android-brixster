@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +25,8 @@ public class StoreCartActivity extends ActionBarActivity {
     private static int tabWidth;
     private static int tabBarHeight;
     private static float screenDensity;
+
+    private static Button checkoutBtn;
 
     // Tab buttons
     private static TextView tabBackground;
@@ -59,6 +62,14 @@ public class StoreCartActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.store_cart_activity);
+
+        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(R.layout.custom_action_bar);
+
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
+
         screenDensity = getResources().getDisplayMetrics().density;
 
         // Get tab bar buttons
@@ -69,6 +80,14 @@ public class StoreCartActivity extends ActionBarActivity {
 
         getScreenDimensions();
         setUpTabs();
+
+        checkoutBtn = (Button) findViewById(R.id.checkoutBtn);
+        checkoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         // Set tab bar click events
         storeButton.setOnClickListener(new View.OnClickListener() {
@@ -99,20 +118,6 @@ public class StoreCartActivity extends ActionBarActivity {
             }
         });
 
-        cartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent goToCart = new Intent(
-                        StoreCartActivity.this, StoreCartActivity.class);
-                goToCart.putParcelableArrayListExtra("itemsInCart", itemsInCart);
-                goToCart.putExtra("hasCart", true);
-                goToCart.putExtra("cartTotal", cartTotal.toString());
-                goToCart.putExtra("cartSize", cartSize);
-                goToCart.putExtra("hasCart", true);
-                startActivity(goToCart);
-            }
-        });
-
         // Get cart information
         Intent it = getIntent();
 
@@ -120,10 +125,20 @@ public class StoreCartActivity extends ActionBarActivity {
         cartSize = it.getIntExtra("cartSize", 0);
         String cartTotalString = it.getStringExtra("cartTotal");
         if (cartTotalString.isEmpty()) {
-            cartTotal = BigDecimal.ZERO;
+            cartTotal = BigDecimal.ZERO.setScale(2, RoundingMode.CEILING);
         } else {
             cartTotal = new BigDecimal(cartTotalString);
         }
+
+        TextView tv = (TextView) findViewById(R.id.cartInfo);
+        String info = "Items in cart: " + cartSize + "\n";
+        info += "Total cost: $" + cartTotal.toString() + "\n";
+        info += "Items in Cart:\n";
+        for(Product p : itemsInCart) {
+            info += p.getProductName() + "  $" + p.getProductPrice() + "\n" + p.getProductCode();
+        }
+
+        tv.setText(info);
     }
 
     /**
@@ -132,9 +147,9 @@ public class StoreCartActivity extends ActionBarActivity {
     private void setUpTabs() {
         tabBackground.getLayoutParams().height = tabBarHeight + dpToPx(TAB_DIVIDER_WIDTH);
         storeButton.getLayoutParams().height = tabBarHeight;
-        storeButton.getLayoutParams().width = tabWidth;
+        storeButton.getLayoutParams().width = tabWidth  - dpToPx(TAB_DIVIDER_WIDTH);
         cartButton.getLayoutParams().height = tabBarHeight;
-        cartButton.getLayoutParams().width = tabWidth;
+        cartButton.getLayoutParams().width = tabWidth  - dpToPx(TAB_DIVIDER_WIDTH);
         scanButton.getLayoutParams().height = tabBarHeight;
         scanButton.getLayoutParams().width = tabWidth;
     }
@@ -151,7 +166,7 @@ public class StoreCartActivity extends ActionBarActivity {
         screenHeight = size.y;
 
         // Setup tab button widths, subtract value to set divider length
-        tabWidth = (screenWidth / NUM_TABS) - dpToPx(TAB_DIVIDER_WIDTH);
+        tabWidth = (screenWidth / NUM_TABS);
         tabBarHeight = dpToPx(TAB_BAR_HEIGHT);
     }
 
@@ -165,7 +180,7 @@ public class StoreCartActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_store_cart, menu);
+        getMenuInflater().inflate(R.menu.default_menu, menu);
         return true;
     }
 

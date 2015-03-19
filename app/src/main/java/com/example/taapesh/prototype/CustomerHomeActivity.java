@@ -14,11 +14,14 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.os.Bundle;
 import android.os.AsyncTask;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.content.Intent;
@@ -44,9 +47,13 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import android.content.IntentSender;
 import android.location.Location;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RelativeLayout;
+import android.view.ViewGroup.LayoutParams;
 
 
 public class CustomerHomeActivity extends ActionBarActivity implements
@@ -54,7 +61,17 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    private static DrawerLayout mDrawerLayout;
+    private static ImageView menuToggleIcon;
+    private static View menuToggleArea;
+
+    private static View storeSearchBox;
+    private static final int searchBarHeight = 75;
+    private static final int searchBarMargin = 10;
+
     private static final String TAG = CustomerHomeActivity.class.getSimpleName();
+
+    private static float screenDensity;
 
     // Define a request code to send to Google Play services
     // This code is returned in Activity.onActivityResult
@@ -112,12 +129,26 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customer_home_activity);
 
+        screenDensity = getResources().getDisplayMetrics().density;
+
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setCustomView(R.layout.custom_action_bar);
 
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
+
+        // Setup menu toggle stuff
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        menuToggleIcon = (ImageView) findViewById(R.id.menuIcon);
+        menuToggleArea = findViewById(R.id.menuToggleArea);
+
+        menuToggleArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleDrawer();
+            }
+        });
 
         // Set activity reference
         actRef = CustomerHomeActivity.this;
@@ -156,6 +187,12 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         // Initialize input method manager
         imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
 
+        storeSearchBox = findViewById(R.id.storeSearchBox);
+
+        // Get store search field and attach it to autocomplete
+        storeSearchField = (AutoCompleteTextView) findViewById(R.id.storeSearchField);
+        storeSearchField.setAdapter(new StoreSearchAdapter(this, R.layout.list_item));
+
         // Find store results ListView and hide it until customer picks a store
         storeResultsView = (ListView) findViewById(R.id.storeResultsView);
         storeResultsView.setVisibility(View.GONE);
@@ -178,10 +215,6 @@ public class CustomerHomeActivity extends ActionBarActivity implements
             }
         });
 
-        // Get store search field and attach it to autocomplete
-        storeSearchField = (AutoCompleteTextView) findViewById(R.id.storeSearchField);
-        storeSearchField.setAdapter(new StoreSearchAdapter(this, R.layout.list_item));
-
         /**
         * On selecting a store from autocomplete dropdown
         * load and show store locations
@@ -199,6 +232,47 @@ public class CustomerHomeActivity extends ActionBarActivity implements
                 new LoadStores().execute(storeName);
             }
         });
+
+        mDrawerLayout.setDrawerListener(new ActionBarDrawerToggle(this,
+                mDrawerLayout, null, 0, 0){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                menuToggleIcon.setImageResource(R.drawable.menu_24);
+            }
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                menuToggleIcon.setImageResource(R.drawable.left_arrow_24);
+            }});
+
+        setupUI();
+    }
+
+    private void setupUI() {
+        int barHeight = dpToPx(searchBarHeight);
+        int margin = dpToPx(searchBarMargin);
+
+        RelativeLayout.LayoutParams rParams = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, barHeight);
+        rParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        rParams.setMargins(margin, margin, margin, 0);
+        storeSearchBox.setLayoutParams(rParams);
+
+        rParams = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        rParams.topMargin = barHeight + margin;
+        rParams.leftMargin = margin;
+        rParams.rightMargin = margin;
+        storeResultsView.setLayoutParams(rParams);
+
+    }
+
+    /**
+     * Convert dp to pixels
+     */
+    private int dpToPx(int dp) {
+        return Math.round((float)dp * screenDensity);
     }
 
     /**
@@ -261,7 +335,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
          * CardArrayAdapter
          */
         protected void onPostExecute(String result) {
-            pDialog.dismiss();
+            hideProgress();
 
             // Create custom array adapter and attach it to ListView
             CardAdapter cardAdapter= new CardAdapter(
@@ -273,6 +347,27 @@ public class CustomerHomeActivity extends ActionBarActivity implements
             storeResultsView.setAdapter(cardAdapter);
             storeResultsView.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void hideProgress() {
+        if(pDialog != null && pDialog.isShowing()) {
+                pDialog.dismiss();
+        }
+                /*
+                //get the Context object that was used to great the dialog
+                Context context = ((ContextWrapper)pDialog.getContext()).getBaseContext();
+
+                //if the Context used here was an activity AND it hasn't been finished or destroyed
+                //then dismiss it
+                if(context instanceof Activity) {
+                    if(!((Activity)context).isFinishing() && !((Activity)context).isDestroyed())
+                        pDialog.dismiss();
+                } else //if the Context used wasnt an Activity, then dismiss it too
+                    pDialog.dismiss();
+            }
+            pDialog = null;
+            */
+
     }
 
     public class CardAdapter extends ArrayAdapter<Store> {
@@ -408,6 +503,11 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         super.onResume();
         storeSearchField.setText("");
         mGoogleApiClient.connect();
+
+        // For some reason, I have to refind drawer on page resume
+        // or it stops responding to the toggle button
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        menuToggleIcon = (ImageView) findViewById(R.id.menuIcon);
     }
 
     /**
@@ -527,7 +627,7 @@ public class CustomerHomeActivity extends ActionBarActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_customer_home, menu);
+        getMenuInflater().inflate(R.menu.default_menu, menu);
         return true;
     }
 
@@ -538,6 +638,16 @@ public class CustomerHomeActivity extends ActionBarActivity implements
         protected String doInBackground(String... args) {
             imm.hideSoftInputFromWindow(actRef.getCurrentFocus().getWindowToken(), 0);
             return null;
+        }
+    }
+
+    private void toggleDrawer() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawer(Gravity.START);
+            menuToggleIcon.setImageResource(R.drawable.menu_24);
+        } else {
+            mDrawerLayout.openDrawer(Gravity.START);
+            menuToggleIcon.setImageResource(R.drawable.left_arrow_24);
         }
     }
 }

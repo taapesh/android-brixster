@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="background">#D8D8D8</color>
     <color name="main_green">#118504</color>
     <color name="sa_green">#14a804</color>
@@ -36,5 +35,7 @@
     <color name="card_detailing">#eee</color>
     <color name="btn_bg">#ecf0f1</color>
     <color name="deep_red">#9A2E22</color>
-
+    <color name="tab_icon">#434343</color>
+    <color name="store_card_shadow">#BCBCBC</color>
+    <color name="search_box_shadow">#ffb5b5b5</color>
 </resources>

@@ -4,15 +4,20 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <ImageButton
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="64dp"
+        android:layout_height="50dp"
+        android:id="@+id/menuToggleArea">
+
+    <ImageView
+        android:id="@+id/menuIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/menuButton"
-        android:src="@drawable/menu_32"
+        android:src="@drawable/menu_24"
         android:background="@color/transparent"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="-17dp"
         android:tint="@color/white"/>
 
+    </RelativeLayout>
 </RelativeLayout>

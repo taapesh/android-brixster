@@ -4,15 +4,21 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -23,6 +29,10 @@ import java.util.ArrayList;
 
 
 public class StoreBrowseActivity extends ActionBarActivity {
+    private static DrawerLayout mDrawerLayout;
+    private static ImageView menuToggleIcon;
+    private static View menuToggleArea;
+
     // Tab buttons
     private static TextView tabBackground;
     private static ImageButton storeButton;
@@ -39,8 +49,8 @@ public class StoreBrowseActivity extends ActionBarActivity {
     private static int tabBarHeight;
     private static float screenDensity;
 
-    // Tab host
-    private static TabHost th;
+    private static Button businessLoginBtn;
+    private static Button employeeLoginBtn;
 
     // Test data
     private static final String[] productNames = { "Peace Tea Georgia Peach Tea" };
@@ -60,6 +70,25 @@ public class StoreBrowseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.store_browse_activity);
+
+        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setCustomView(R.layout.custom_action_bar);
+
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        menuToggleIcon = (ImageView) findViewById(R.id.menuIcon);
+        menuToggleArea = findViewById(R.id.menuToggleArea);
+
+        menuToggleArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleDrawer();
+            }
+        });
+
         screenDensity = getResources().getDisplayMetrics().density;
 
         // Check for cart info passed by other activity
@@ -85,7 +114,6 @@ public class StoreBrowseActivity extends ActionBarActivity {
             itemsInCart = new ArrayList<>();
         }
 
-
         // Get tab bar buttons
         storeButton = (ImageButton) findViewById(R.id.storeButton);
         scanButton = (ImageButton) findViewById(R.id.scanButton);
@@ -94,22 +122,8 @@ public class StoreBrowseActivity extends ActionBarActivity {
 
         getScreenDimensions();
         setUpControlBar();
-        setUpTabs();
 
         // Set tab bar click events
-        storeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent goToStore = new Intent(
-                        StoreBrowseActivity.this, StoreBrowseActivity.class);
-                goToStore.putParcelableArrayListExtra("itemsInCart", itemsInCart);
-                goToStore.putExtra("hasCart", true);
-                goToStore.putExtra("cartTotal", cartTotal.toString());
-                goToStore.putExtra("cartSize", cartSize);
-                startActivity(goToStore);
-            }
-        });
-
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,23 +150,18 @@ public class StoreBrowseActivity extends ActionBarActivity {
             }
         });
 
-
-        th.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+        mDrawerLayout.setDrawerListener(new ActionBarDrawerToggle(this,
+                mDrawerLayout, null, 0, 0){
             @Override
-            public void onTabChanged(String tabId) {
-                int i = th.getCurrentTab();
-
-                Toast.makeText(
-                    StoreBrowseActivity.this,
-                    "On tab " + Integer.toString(i),
-                    Toast.LENGTH_SHORT
-                ).show();
-
-                // Depending on the tab chosen, start/stop
-                // certain services
-
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                menuToggleIcon.setImageResource(R.drawable.menu_24);
             }
-        });
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                menuToggleIcon.setImageResource(R.drawable.left_arrow_24);
+            }});
     }
 
     /**
@@ -166,32 +175,6 @@ public class StoreBrowseActivity extends ActionBarActivity {
         cartButton.getLayoutParams().width = tabWidth - dpToPx(TAB_DIVIDER_WIDTH);
         scanButton.getLayoutParams().height = tabBarHeight;
         scanButton.getLayoutParams().width = tabWidth;
-    }
-
-    /**
-     * Setup tab subviews
-     */
-    private void setUpTabs() {
-        th = (TabHost) findViewById(R.id.tabHost);
-        th.setup();
-
-        // Setup browse tab
-        TabHost.TabSpec specs = th.newTabSpec("tag1");
-        specs.setContent(R.id.tab1);
-        specs.setIndicator("Browse");
-        th.addTab(specs);
-
-        // Setup deals tab
-        specs = th.newTabSpec("tag2");
-        specs.setContent(R.id.tab2);
-        specs.setIndicator("Deals");
-        th.addTab(specs);
-
-        // Setup store navigation tab
-        specs = th.newTabSpec("tag3");
-        specs.setContent(R.id.tab3);
-        specs.setIndicator("Store Map");
-        th.addTab(specs);
     }
 
     /**
@@ -220,7 +203,7 @@ public class StoreBrowseActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_store_browse, menu);
+        getMenuInflater().inflate(R.menu.default_menu, menu);
         return true;
     }
 
@@ -243,5 +226,20 @@ public class StoreBrowseActivity extends ActionBarActivity {
     protected void onResume() {
         overridePendingTransition(0,0);
         super.onResume();
+
+        // For some reason, I have to refind drawer on page resume
+        // or it stops responding to the toggle button
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        menuToggleIcon = (ImageView) findViewById(R.id.menuIcon);
+    }
+
+    private void toggleDrawer() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawer(Gravity.START);
+            menuToggleIcon.setImageResource(R.drawable.menu_24);
+        } else {
+            mDrawerLayout.openDrawer(Gravity.START);
+            menuToggleIcon.setImageResource(R.drawable.left_arrow_24);
+        }
     }
 }

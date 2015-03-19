@@ -10,9 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.camera2" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="hardware.camera.autofocus" />
+
 
     <application
         android:allowBackup="true"
@@ -25,19 +25,23 @@
 
         <activity
             android:name=".CustomerHomeActivity"
-            android:label="" >
+            android:label=""
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CustomerRegisterActivity"
-            android:label="@string/title_activity_register" >
+            android:label="@string/title_activity_register"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CustomerLoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".StartActivity"
-            android:label="@string/title_activity_start" >
+            android:label="@string/title_activity_start"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,37 +50,44 @@
         </activity>
         <activity
             android:name=".BusinessLoginActivity"
-            android:label="@string/title_activity_business_login" >
+            android:label="@string/title_activity_business_login"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".EmployeeLoginActivity"
-            android:label="@string/title_activity_employee_login" >
+            android:label="@string/title_activity_employee_login"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".StorePasswordActivity"
-            android:label="@string/title_activity_enter_store_password" >
+            android:label="@string/title_activity_enter_store_password"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".EmployeeHomeActivity"
-            android:label="@string/title_activity_employee_homepage" >
+            android:label="@string/title_activity_employee_homepage"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".BusinessHomeActivity"
-            android:label="@string/title_activity_business_homepage" >
+            android:label="@string/title_activity_business_homepage"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".StoreScanActivity"
-            android:label="@string/title_activity_store_browse" >
+            android:label=""
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".StoreCartActivity"
-            android:label="@string/title_activity_store_cart" >
+            android:label="@string/title_activity_store_cart"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".StoreBrowseActivity"
-            android:label="StoreBrowseActivity" >
+            android:label="StoreBrowseActivity"
+            android:screenOrientation="portrait">
         </activity>
 
     </application>
-
 </manifest>
