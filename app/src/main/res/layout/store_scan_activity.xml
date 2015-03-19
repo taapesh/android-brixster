@@ -79,18 +79,6 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/confirmBg"
-            android:src="@drawable/circle_bg"
-            android:background="@color/transparent"
-            android:tint="@color/white"
-            android:layout_below="@+id/productPrice"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"/>
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/cancelBtn"
             android:src="@drawable/cancel_64"
             android:background="@color/transparent"

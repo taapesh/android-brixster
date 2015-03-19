@@ -1,6 +1,7 @@
 package com.example.taapesh.prototype;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,6 +13,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -54,6 +59,11 @@ public class StoreCartActivity extends ActionBarActivity {
     // ListView to hold cart contents
     private static ListView cartContentsView;
 
+    // Bitmap images to be saved
+    private static ArrayList<Bitmap> bitmaps;
+
+    private static BarcodeGenerator barcodeGenerator;
+
     // Button to apply coupon, button to checkout
 
     // TextView to show total cost
@@ -85,7 +95,7 @@ public class StoreCartActivity extends ActionBarActivity {
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                saveOrder();
             }
         });
 
@@ -139,6 +149,10 @@ public class StoreCartActivity extends ActionBarActivity {
         }
 
         tv.setText(info);
+
+        // Setup barcode images
+        barcodeGenerator = new BarcodeGenerator();
+        bitmaps = new ArrayList<>();
     }
 
     /**
@@ -236,5 +250,38 @@ public class StoreCartActivity extends ActionBarActivity {
      */
     private BigDecimal getCartTotal() {
         return cartTotal.setScale(2, RoundingMode.CEILING);
+    }
+
+
+    private void saveOrder() {
+        Toast.makeText(StoreCartActivity.this, "Saving order information...", Toast.LENGTH_SHORT).show();
+
+        // Insert new order into orders table in Amazon DynamoDB
+        // Order info:
+        // Shopper name
+        // Shopper email
+        // Number of items purchased
+        // For each product:
+            // product name (if available)
+            // product code
+            // product code symbology
+            // proof of purchase image
+
+        for (Product p : itemsInCart) {
+            String code = p.getProductCode();
+            String symbology = p.getCodeSymbology();
+            String name = p.getProductName();
+        }
+    }
+
+    private void generateBarcodeImage(String code, String symbology) {
+        try {
+            BarcodeFormat format = barcodeGenerator.getBarcodeFormat(symbology);
+            if (format != null) {
+                Bitmap bmp = barcodeGenerator.encodeAsBitmap(code, format);
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 }

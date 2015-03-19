@@ -5,13 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import android.widget.RelativeLayout;
@@ -27,9 +25,22 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
+// Barcode imports
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 
 public class StoreScanActivity extends Activity
     implements ScanditSDKListener {
+
+    private static final int WHITE = 0xFFFFFFFF;
+    private static final int BLACK = 0xFF000000;
+
+    private static final int BARCODE_WIDTH = 180;
+    private static final int BARCODE_HEIGHT = 40;
+    private static BarcodeFormat format;
+
     /**
      * If quick scan is enabled, items will be added
      * to cart as soon as they are scanned.
@@ -81,6 +92,7 @@ public class StoreScanActivity extends Activity
     private static String productName;
     private static String productPrice;
     private static String productCode;
+    private static String codeSymbology;
 
     private static ImageButton confirmBtn;
     private static ImageButton cancelBtn;
@@ -101,12 +113,21 @@ public class StoreScanActivity extends Activity
     private static int cartSize;
     private static ArrayList<Product> itemsInCart;
 
+    // Barcode stuff
+    private static BarcodeGenerator barcodeGenerator;
+
+    // Barcode image
+    private static Bitmap bitmap = null;
+    private static ImageView iv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.store_scan_activity);
         rootView = (RelativeLayout) findViewById(R.id.root);
         screenDensity = getResources().getDisplayMetrics().density;
+
+        iv = new ImageView(this);
 
         // Get referring intent and identify the store
         Intent it = getIntent();
@@ -186,6 +207,8 @@ public class StoreScanActivity extends Activity
             }
         });
 
+        barcodeGenerator = new BarcodeGenerator();
+
         getScreenDimensions();
         // Initialize scanner
         initializeScanner();
@@ -245,6 +268,12 @@ public class StoreScanActivity extends Activity
         rParams.rightMargin = btnSidePadding;
         rParams.bottomMargin = btnBottomPadding;
         confirmBtn.setLayoutParams(rParams);
+
+        rParams = new RelativeLayout.LayoutParams(
+                screenWidth / 2, screenHeight / 5);
+        rParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        iv.setLayoutParams(rParams);
+        rootView.addView(iv);
     }
 
     /**
@@ -365,6 +394,8 @@ public class StoreScanActivity extends Activity
     @Override
     public void didScanBarcode(String barcode, String symbology) {
         barcode = barcode.trim();
+
+        codeSymbology = symbology;
 
         // Lookup barcode
         lookupProduct(barcode);
@@ -526,10 +557,10 @@ public class StoreScanActivity extends Activity
      */
     private void addProductToCart() {
         BigDecimal price = new BigDecimal(productPrice);
-        itemsInCart.add(new Product(productName, price, productCode));
+        itemsInCart.add(new Product(productName, price, productCode, codeSymbology));
         cartTotal = cartTotal.add(price);
         cartSize++;
     }
 
-    //
+
 }
