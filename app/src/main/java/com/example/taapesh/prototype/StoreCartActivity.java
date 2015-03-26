@@ -256,16 +256,21 @@ public class StoreCartActivity extends ActionBarActivity {
     private void saveOrder() {
         Toast.makeText(StoreCartActivity.this, "Saving order information...", Toast.LENGTH_SHORT).show();
 
-        // Insert new order into orders table in Amazon DynamoDB
-        // Order info:
-        // Shopper name
-        // Shopper email
-        // Number of items purchased
-        // For each product:
-            // product name (if available)
-            // product code
-            // product code symbology
-            // proof of purchase image
+        /**
+         * Insert new order into orders table in Amazon DynamoDB
+         *
+         * order info:
+         *      shopper name
+         *      shopper email
+         *      number of items purchased
+         *      store name and location
+         *
+         *      For each product:
+         *          product name (if available)
+         *          product code
+         *          product code symbology
+         *          proof of purchase image
+         */
 
         for (Product p : itemsInCart) {
             String code = p.getProductCode();

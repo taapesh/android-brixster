@@ -80,10 +80,13 @@ public class BarcodeGenerator {
                 format = BarcodeFormat.CODE_128;
                 break;
             case "EAN8":
+                format = BarcodeFormat.EAN_8;
                 break;
             case "EAN13":
+                format = BarcodeFormat.EAN_13;
                 break;
             case "UPCE":
+                format = BarcodeFormat.UPC_E;
                 break;
             case "GS1-128":
                 break;
