@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,9 +59,6 @@ public class StoreCartActivity extends ActionBarActivity {
 
     // ListView to hold cart contents
     private static ListView cartContentsView;
-
-    // Bitmap images to be saved
-    private static ArrayList<Bitmap> bitmaps;
 
     private static BarcodeGenerator barcodeGenerator;
 
@@ -144,15 +142,25 @@ public class StoreCartActivity extends ActionBarActivity {
         String info = "Items in cart: " + cartSize + "\n";
         info += "Total cost: $" + cartTotal.toString() + "\n";
         info += "Items in Cart:\n";
+
+        // Setup barcode images
+        barcodeGenerator = new BarcodeGenerator();
+        Bitmap bmp = null;
         for(Product p : itemsInCart) {
             info += p.getProductName() + "  $" + p.getProductPrice() + "\n" + p.getProductCode();
+            try {
+                bmp = barcodeGenerator.encodeAsBitmap(p.getProductCode(), BarcodeFormat.UPC_A);
+            } catch (Exception e) {
+
+            }
         }
 
         tv.setText(info);
 
-        // Setup barcode images
-        barcodeGenerator = new BarcodeGenerator();
-        bitmaps = new ArrayList<>();
+        ImageView iv = (ImageView) findViewById(R.id.barcodeImage);
+        if (bmp != null) {
+            iv.setImageBitmap(bmp);
+        }
     }
 
     /**

@@ -13,20 +13,30 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+        android:background="@color/white"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/input_login"
+        android:textColorHint="@color/input_login_hint"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:hint="Password"
+        android:background="@color/white"
         android:ems="10"
         android:id="@+id/loginPassword"
         android:layout_below="@+id/loginEmail"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:fontFamily="sans-serif" />
+        android:fontFamily="sans-serif"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/input_login"
+        android:textColorHint="@color/input_login_hint"/>
 
     <Button
         android:layout_width="match_parent"
@@ -34,12 +44,12 @@
         android:text="Login"
         android:id="@+id/loginButton"
         android:layout_below="@+id/loginPassword"
-        android:background="@color/main_green"
-        android:textColor="#ffffffff"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:height="60dp"/>
+        android:height="60dp"
+        android:background="@color/main_green"
+        android:textColor="@color/white"/>
 
     <Button
         android:layout_width="wrap_content"

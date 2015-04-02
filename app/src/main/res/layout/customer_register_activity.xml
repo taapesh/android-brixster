@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:hint="First Name"
+        android:background="@color/white"
         android:ems="10"
         android:id="@+id/registerFirstName"
         android:layout_alignParentTop="true"
@@ -19,13 +20,18 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/input_login"
+        android:textColorHint="@color/input_login_hint"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:hint="Last Name"
+        android:background="@color/white"
         android:ems="10"
         android:id="@+id/registerLastName"
         android:layout_below="@+id/registerFirstName"
@@ -33,13 +39,18 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/input_login"
+        android:textColorHint="@color/input_login_hint"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:hint="Email"
+        android:background="@color/white"
         android:ems="10"
         android:id="@+id/registerEmail"
         android:layout_below="@+id/registerLastName"
@@ -47,13 +58,18 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/input_login"
+        android:textColorHint="@color/input_login_hint"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:hint="Password"
+        android:background="@color/white"
         android:ems="10"
         android:id="@+id/registerPassword"
         android:layout_below="@+id/registerEmail"
@@ -62,7 +78,11 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp"
-        android:fontFamily="sans-serif"/>
+        android:fontFamily="sans-serif"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/input_login"
+        android:textColorHint="@color/input_login_hint"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -76,6 +96,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/registerPassword"
         android:layout_alignEnd="@+id/registerPassword"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="30dp"
+        android:height="60dp"/>
 
 </RelativeLayout>
